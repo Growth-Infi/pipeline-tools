@@ -3,4 +3,5 @@ export const config = {
     supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     encryptionKey: process.env.NEXT_PUBLIC_ENCRYPTION_KEY!,
     genaiApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY!,
+    apifyApiKey: process.env.NEXT_PUBLIC_APIFY_API_KEY!,
 };
