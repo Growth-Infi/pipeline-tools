@@ -37,11 +37,10 @@ async function fetchApi(actorId: string, input: Record<string, unknown>) {
 
 function extractProfile(data: Record<string, unknown>) {
     const { firstName, lastName, headline, about, experience, projects, skills, openToWork } = data
-    const experienceSliced = (experience as any[]).slice(0, 3)
-    const skillsSliced = (skills as any[]).slice(0, 6)
+    const experienceSliced = (experience as any[]).slice(0, 2)
+    // const skillsSliced = (skills as any[]).slice(0, 6)
 
-    //maybe slice skills and experience
-    return { firstName, lastName, headline, about, experienceSliced, projects, skillsSliced, openToWork }
+    return { firstName, lastName, headline, about, experienceSliced, projects, skills, openToWork }
 }
 
 function extractCompany(data: Record<string, unknown>) {

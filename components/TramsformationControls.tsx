@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Database, ShieldCheck, Eraser, Settings2 } from 'lucide-react';
+import { Database, ShieldCheck, Eraser, Settings2, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-// import EmailVerificationPanel from './EmailVerificationPanel';
+import IcebreakerTab from './tabs/IcebreakerTab';
 import DataToolsTab from './tabs/DataToolsTab';
 import CleaningTab from './tabs/CleaningTab';
 
-type ToolId = 'data' | 'clean' | 'verify';
+type ToolId = 'data' | 'clean' | 'icebreaker' | 'verify';
 
 interface Tool {
     id: ToolId;
@@ -19,6 +19,7 @@ interface Tool {
 const TOOLS: Tool[] = [
     { id: 'data', label: 'Data Tools', icon: Database, color: 'text-blue-400' },
     { id: 'clean', label: 'Cleaning', icon: Eraser, color: 'text-amber-400' },
+    { id: 'icebreaker', label: 'Ice Breaker', icon: Sparkles, color: 'text-amber-400' },
     // { id: 'verify', label: 'Verifier', icon: ShieldCheck, color: 'text-emerald-400' },
 ];
 
@@ -66,7 +67,8 @@ export default function TransformationControls() {
                 </div>
 
                 <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
-                    {/* {activeTool === 'verify' && <EmailVerificationPanel />} */}
+                    {/* {activeTool === 'verify' && <IcebreakerTab />} */}
+
 
                     {activeTool !== 'verify' && (
                         <motion.div
@@ -77,6 +79,7 @@ export default function TransformationControls() {
                         >
                             {activeTool === 'data' && <DataToolsTab />}
                             {activeTool === 'clean' && <CleaningTab />}
+                            {activeTool === 'icebreaker' && <IcebreakerTab />}
                         </motion.div>
                     )}
                 </div>
