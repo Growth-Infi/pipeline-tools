@@ -24,7 +24,8 @@ export async function POST(req: NextRequest) {
             messages: messages.slice(1),
         });
 
-        return NextResponse.json({ result: response.content[0].text?.trim() });
+        const block = response.content.find((b: any) => b.type === 'text');
+        return NextResponse.json({ result: block?.text?.trim() ?? '' });
     } catch (e: any) {
         return NextResponse.json({ error: e.message }, { status: 500 });
     }
