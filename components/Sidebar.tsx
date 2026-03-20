@@ -16,13 +16,13 @@ export const Sidebar = () => {
             </div>
 
             <nav className="flex-1 space-y-4 w-full px-2">
-                {/* <button
+                <button
                     onClick={() => router.push('/projects')}
                     className={`w-full p-3 rounded-xl transition-all flex justify-center group relative ${pathname === '/projects' ? 'bg-white/10 text-white' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
                     title="Projects"
                 >
                     <LayoutGrid className="w-5 h-5" />
-                </button> */}
+                </button>
 
                 <button
                     onClick={() => { router.push('/workspace'); }}
