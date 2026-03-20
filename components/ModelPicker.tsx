@@ -3,12 +3,18 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from 'lucide-react';
 
 const OPENAI_MODELS = [
-    { id: 'gpt-4o-mini', label: 'GPT-4o mini', badge: 'Fast' },
+    { id: 'gpt-5', label: 'GPT-5', badge: 'Smart' },
+    { id: 'gpt-5-mini', label: 'GPT-5 mini', badge: 'Fast' },
+    { id: 'gpt-5-nano', label: 'GPT-5 nano', badge: 'Cheapest' },
+    { id: 'gpt-4o-mini', label: 'GPT-4o mini', badge: '' },
     { id: 'gpt-4o', label: 'GPT-4o', badge: 'Smart' },
     { id: 'gpt-4.1', label: 'GPT-4.1', badge: null },
     { id: 'gpt-4.1-mini', label: 'GPT-4.1 mini', badge: null },
-    { id: 'gpt-4.1-nano', label: 'GPT-4.1 nano', badge: 'Cheapest' },
+    { id: 'gpt-4.1-nano', label: 'GPT-4.1 nano', badge: '' },
     { id: 'o4-mini', label: 'o4-mini', badge: 'Reasoning' },
+    { id: "claude-sonnet-4-6", label: "Claude-sonnet-4-6", badge: 'Smart' },
+    { id: "claude-opus-4-6", label: "Claude-opus-4-6", badge: 'Powerful' },
+    { id: "claude-haiku-4-5-20251001", label: "Claude-haiku-4-5-20251001", badge: 'Fast' }
 ];
 
 export function ModelPicker({ value, onChange }: { value: string; onChange: (m: string) => void }) {

@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import { Database, ShieldCheck, Eraser, Settings2, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
-import IcebreakerTab from './tabs/IcebreakerTab';
+import EnrichmentTab from './tabs/EnrichmentTab';
 import DataToolsTab from './tabs/DataToolsTab';
 import CleaningTab from './tabs/CleaningTab';
 
-type ToolId = 'data' | 'clean' | 'icebreaker' | 'verify';
+type ToolId = 'data' | 'clean' | 'enrichment' | 'verify';
 
 interface Tool {
     id: ToolId;
@@ -19,7 +19,7 @@ interface Tool {
 const TOOLS: Tool[] = [
     { id: 'data', label: 'Data Tools', icon: Database, color: 'text-blue-400' },
     { id: 'clean', label: 'Cleaning', icon: Eraser, color: 'text-amber-400' },
-    { id: 'icebreaker', label: 'Ice Breaker', icon: Sparkles, color: 'text-amber-400' },
+    { id: 'enrichment', label: 'Enrichment', icon: Sparkles, color: 'text-amber-400' },
     // { id: 'verify', label: 'Verifier', icon: ShieldCheck, color: 'text-emerald-400' },
 ];
 
@@ -79,7 +79,7 @@ export default function TransformationControls() {
                         >
                             {activeTool === 'data' && <DataToolsTab />}
                             {activeTool === 'clean' && <CleaningTab />}
-                            {activeTool === 'icebreaker' && <IcebreakerTab />}
+                            {activeTool === 'enrichment' && <EnrichmentTab />}
                         </motion.div>
                     )}
                 </div>

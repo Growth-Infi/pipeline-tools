@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
             profileUrls: companyUrls
         })
     ])
-
     return NextResponse.json({
         profiles: profileResults.status === 'fulfilled' ? profileResults.value.map(extractProfile) : [],
         companies: companyResults.status === 'fulfilled' ? companyResults.value.map(extractCompany) : [],
@@ -30,7 +29,6 @@ async function fetchApi(actorId: string, input: Record<string, unknown>) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
     })
-    console.log(res)
     if (!res.ok) throw new Error(`Apify error ${res.status}`);
     return res.json();
 }
