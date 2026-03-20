@@ -31,7 +31,8 @@ Rules:
 - If you lack specific knowledge about a company or person, infer only from what is explicitly provided in the prompt — company name, domain, job title, industry. Do not fabricate facts.
 - Use ONLY straight ASCII characters. Forbidden: em dashes (—), en dashes (–), curly quotes (" " ' '), ellipsis (…). Hyphens (-) and straight quotes (") only.
 - No markdown, no bullet points, no code blocks, no quotes wrapping the response.
-- Your output will be written directly into a CSV cell. Format accordingly.`;
+- Your output will be written directly into a CSV cell. Format accordingly.
+- If you cant answer simply return nothing, do not ask clarifying questions or explanations `;
 
 export default function EnrichmentTab() {
     const { csvData, columnOrder, setCsvData } = useAppStore();
@@ -68,6 +69,7 @@ export default function EnrichmentTab() {
         setScrapeRunning(true);
         setScrapeProgress({ done: 0, total: newData.length, errors: 0 });
         const url = claudeModels.includes(model) ? '/api/claude' : '/api/openai';
+        const failed: number[] = [];
 
         const BATCH_SIZE = 10;
         const CONCURRENCY = 3;
@@ -83,8 +85,10 @@ export default function EnrichmentTab() {
 
                 await Promise.all(indices.map(async (rowIdx, i) => {
                     try {
-                        const profile = profiles.find((p: any) => p.linkedinUrl === profileUrlsBatch[i]);
-                        const company = companies.find((c: any) => c.url === companyUrlsBatch[i]);
+                        const normalize = (url: string) => url?.toLowerCase().replace(/^https?:\/\//, '').replace(/\/+$/, '').trim();
+                        const profile = profiles.find((p: any) => normalize(p.linkedinUrl) === normalize(profileUrlsBatch[i]));
+                        const company = companies.find((c: any) => normalize(c.url) === normalize(companyUrlsBatch[i]));
+
                         const genRes = await fetch(url, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -103,12 +107,16 @@ export default function EnrichmentTab() {
                     } catch {
                         newData[rowIdx] = { ...newData[rowIdx], icebreaker: '' };
                         setScrapeProgress(p => ({ ...p, errors: p.errors + 1 }));
+                        failed.push(rowIdx);
                     }
                     setScrapeProgress(p => ({ ...p, done: p.done + 1 }));
                     setCsvData([...newData]);
                 }));
             } catch {
-                indices.forEach(rowIdx => { newData[rowIdx] = { ...newData[rowIdx], icebreaker: '' }; });
+                indices.forEach(rowIdx => {
+                    newData[rowIdx] = { ...newData[rowIdx], icebreaker: '' };
+                    failed.push(rowIdx);
+                });
                 setScrapeProgress(p => ({ ...p, done: p.done + indices.length, errors: p.errors + indices.length }));
                 setCsvData([...newData]);
             }
@@ -123,10 +131,29 @@ export default function EnrichmentTab() {
                 indices: slice.map((_, j) => i + j),
             });
         }
+
         for (let i = 0; i < batches.length; i += CONCURRENCY) {
             const chunk = batches.slice(i, i + CONCURRENCY).map(b => processBatch(b.profileUrls, b.companyUrls, b.indices));
             await Promise.all(chunk);
         }
+        //retry logic
+        if (failed.length > 0) {
+            setScrapeProgress(p => ({ ...p, errors: 0 })); // reset errors for retry
+            const retryBatches: { profileUrls: string[], companyUrls: string[], indices: number[] }[] = [];
+            for (let i = 0; i < failed.length; i += BATCH_SIZE) {
+                const slice = failed.slice(i, i + BATCH_SIZE);
+                retryBatches.push({
+                    profileUrls: slice.map(rowIdx => String(newData[rowIdx][profileCol] ?? '').trim()),
+                    companyUrls: slice.map(rowIdx => String(newData[rowIdx][companyCol] ?? '').trim()),
+                    indices: slice,
+                });
+            }
+            for (let i = 0; i < retryBatches.length; i += CONCURRENCY) {
+                const chunk = retryBatches.slice(i, i + CONCURRENCY).map(b => processBatch(b.profileUrls, b.companyUrls, b.indices));
+                await Promise.all(chunk);
+            }
+        }
+
         setScrapeRunning(false);
     };
 
