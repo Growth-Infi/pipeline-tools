@@ -7,8 +7,6 @@ const anthropic = new Anthropic({
     apiKey: config.claudeApiKey,
 });
 
-
-
 export async function POST(req: NextRequest) {
     try {
         const { messages, model = 'claude-sonnet-4-6', max_tokens = 1000 } = await req.json();
@@ -24,8 +22,8 @@ export async function POST(req: NextRequest) {
             messages: messages.slice(1),
         });
 
-        const block = response.content.find((b: any) => b.type === 'text');
-        return NextResponse.json({ result: block?.text?.trim() ?? '' });
+        const result = (response.content[0]?.type === 'text' ? response.content[0].text : '').trim();
+        return NextResponse.json({ result });
     } catch (e: any) {
         return NextResponse.json({ error: e.message }, { status: 500 });
     }

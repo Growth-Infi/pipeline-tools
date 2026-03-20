@@ -14,25 +14,22 @@ export async function POST(req: NextRequest) {
         if (!openaiModels.includes(model)) {
             return NextResponse.json({ error: "Model not supported" }, { status: 404 })
         }
-        // console.log('input:', JSON.stringify(messages.slice(1), null, 2));
+
         const response = await openai.responses.create({
             model,
-            instructions: messages[0].content,  // system message
-            input: messages.slice(1),            // rest of the conversation
-            // max_output_tokens: max_tokens,
+            instructions: messages[0].content,
+            input: messages.slice(1),
         });
-        const messageItem = response.output.find((item: any) => item.type === 'message');
-        const result = messageItem?.content?.[0]?.text?.trim() ?? '';
+
+        const messageItem = response.output.find(
+            (item): item is OpenAI.Responses.ResponseOutputMessage => item.type === 'message'
+        );
+        const textBlock = messageItem?.content.find(
+            (block): block is OpenAI.Responses.ResponseOutputText => block.type === 'output_text'
+        );
+        const result = textBlock?.text.trim() ?? '';
 
         return NextResponse.json({ result });
-        // console.log(JSON.stringify(response.output, null, 2)); // expands the [Array]
-        // return NextResponse.json({ result: response.output_text });
-        // const response = await openai.chat.completions.create({
-        //     model,
-        //     messages,
-        //     max_completion_tokens: max_tokens,
-        // });
-        // return NextResponse.json({ result: response.choices[0].message.content?.trim() });
     } catch (e: any) {
         console.log(e)
         return NextResponse.json({ error: e.message }, { status: 500 });
