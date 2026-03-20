@@ -32,6 +32,12 @@ const TOOLS: Tool[] = [
     icon: Sparkles,
     color: "text-amber-400",
   },
+  {
+    id: "domainFinder",
+    label: "domainFinder",
+    icon: Sparkles,
+    color: "text-amber-400",
+  },
   // { id: 'verify', label: 'Verifier', icon: ShieldCheck, color: 'text-emerald-400' },
 ];
 
