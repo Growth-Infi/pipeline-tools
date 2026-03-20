@@ -9,12 +9,12 @@ import {
   Sparkles,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import IcebreakerTab from "./tabs/IcebreakerTab";
+import EnrichmentTab from "./tabs/EnrichmentTab";
 import DataToolsTab from "./tabs/DataToolsTab";
 import CleaningTab from "./tabs/CleaningTab";
 import DomainFindTab from "./tabs/DomainFindTab";
 
-type ToolId = "data" | "clean" | "icebreaker" | "verify" | "domainfinder";
+type ToolId = "data" | "clean" | "enrichment" | "verify" | "domainFinder";
 
 interface Tool {
   id: ToolId;
@@ -27,14 +27,8 @@ const TOOLS: Tool[] = [
   { id: "data", label: "Data Tools", icon: Database, color: "text-blue-400" },
   { id: "clean", label: "Cleaning", icon: Eraser, color: "text-amber-400" },
   {
-    id: "icebreaker",
-    label: "Ice Breaker",
-    icon: Sparkles,
-    color: "text-amber-400",
-  },
-  {
-    id: "domainfinder",
-    label: "Domain Finder",
+    id: "enrichment",
+    label: "Enrichment",
     icon: Sparkles,
     color: "text-amber-400",
   },
@@ -98,8 +92,8 @@ export default function TransformationControls() {
             >
               {activeTool === "data" && <DataToolsTab />}
               {activeTool === "clean" && <CleaningTab />}
-              {activeTool === "icebreaker" && <IcebreakerTab />}
-              {activeTool === "domainfinder" && <DomainFindTab />}
+              {activeTool === "enrichment" && <EnrichmentTab />}
+              {activeTool === "domainFinder" && <DomainFindTab />}
             </motion.div>
           )}
         </div>

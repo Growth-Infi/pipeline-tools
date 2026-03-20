@@ -4,4 +4,5 @@ export const config = {
     encryptionKey: process.env.NEXT_PUBLIC_ENCRYPTION_KEY!,
     genaiApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY!,
     apifyApiKey: process.env.NEXT_PUBLIC_APIFY_API_KEY!,
+    claudeApiKey: process.env.NEXT_PUBLIC_CLAUDE_API_KEY!,
 };

@@ -29,20 +29,12 @@ export const Sidebar = () => {
       <nav className="flex-1 space-y-4 w-full px-2">
         {/* PROJECTS BUTTON */}
         <button
-          onClick={() => {
-            console.log("Projects clicked");
-            router.push("/projects");
-          }}
-          className={`w-full p-3 rounded-xl transition-all flex justify-center group relative border ${
-            pathname?.startsWith("/projects")
-              ? "bg-white/20 text-white border-green-500"
-              : "text-zinc-300 hover:text-white hover:bg-white/10 border-transparent"
-          }`}
+          onClick={() => router.push("/projects")}
+          className={`w-full p-3 rounded-xl transition-all flex justify-center group relative ${pathname === "/projects" ? "bg-white/10 text-white" : "text-zinc-500 hover:text-white hover:bg-white/5"}`}
           title="Projects"
         >
-          <LayoutGrid className="w-6 h-6" />
+          <LayoutGrid className="w-5 h-5" />
         </button>
-
         {/* WORKSPACE BUTTON */}
         <button
           onClick={() => {

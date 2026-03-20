@@ -16,11 +16,12 @@ export async function POST(req: NextRequest) {
             profileUrls: companyUrls
         })
     ])
-
-    return NextResponse.json({
+    const results = {
         profiles: profileResults.status === 'fulfilled' ? profileResults.value.map(extractProfile) : [],
         companies: companyResults.status === 'fulfilled' ? companyResults.value.map(extractCompany) : [],
-    });
+    }
+
+    return NextResponse.json(results);
 
 }
 
@@ -30,22 +31,21 @@ async function fetchApi(actorId: string, input: Record<string, unknown>) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input),
     })
-    console.log(res)
     if (!res.ok) throw new Error(`Apify error ${res.status}`);
     return res.json();
 }
 
 function extractProfile(data: Record<string, unknown>) {
-    const { firstName, lastName, headline, about, experience, projects, skills, openToWork } = data
+    const { linkedinUrl, firstName, lastName, headline, about, experience, projects, skills, openToWork } = data
     const experienceSliced = (experience as any[]).slice(0, 2)
     // const skillsSliced = (skills as any[]).slice(0, 6)
 
-    return { firstName, lastName, headline, about, experienceSliced, projects, skills, openToWork }
+    return { linkedinUrl, firstName, lastName, headline, about, experienceSliced, projects, skills, openToWork }
 }
 
 function extractCompany(data: Record<string, unknown>) {
-    const { companyName, tagline, description, industry, employeeCount, specialities, foundedOn } = data
+    const { url, companyName, tagline, description, industry, employeeCount, specialities, foundedOn } = data
     const foundedOnYear = (foundedOn as any)?.year
 
-    return { companyName, tagline, description, industry, employeeCount, specialities, foundedOnYear }
+    return { url, companyName, tagline, description, industry, employeeCount, specialities, foundedOnYear }
 }
