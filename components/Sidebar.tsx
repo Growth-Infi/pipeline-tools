@@ -12,10 +12,10 @@ export const Sidebar = () => {
 
   // 🔍 DEBUG LOGS
   useEffect(() => {
-    console.log("===== SIDEBAR DEBUG =====");
-    console.log("pathname:", pathname);
-    console.log("user:", user);
-    console.log("Sidebar mounted");
+    // console.log("===== SIDEBAR DEBUG =====");
+    // console.log("pathname:", pathname);
+    // console.log("user:", user);
+    // console.log("Sidebar mounted");
   }, [pathname, user]);
 
   return (

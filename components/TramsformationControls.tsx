@@ -7,14 +7,21 @@ import {
   Eraser,
   Settings2,
   Sparkles,
+  Mail,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import EnrichmentTab from "./tabs/EnrichmentTab";
 import DataToolsTab from "./tabs/DataToolsTab";
 import CleaningTab from "./tabs/CleaningTab";
 import DomainFindTab from "./tabs/DomainFindTab";
-
-type ToolId = "data" | "clean" | "enrichment" | "verify" | "domainFinder";
+import EmailVerifyTab from "./tabs/EmailVerifier";
+type ToolId =
+  | "data"
+  | "clean"
+  | "enrichment"
+  | "verify"
+  | "domainFinder"
+  | "emailVerifier";
 
 interface Tool {
   id: ToolId;
@@ -37,6 +44,12 @@ const TOOLS: Tool[] = [
     label: "domainFinder",
     icon: Sparkles,
     color: "text-amber-400",
+  },
+  {
+    id: "emailVerifier",
+    label: "Email Verifier",
+    icon: Mail,
+    color: "text-emerald-400",
   },
   // { id: 'verify', label: 'Verifier', icon: ShieldCheck, color: 'text-emerald-400' },
 ];
@@ -100,6 +113,7 @@ export default function TransformationControls() {
               {activeTool === "clean" && <CleaningTab />}
               {activeTool === "enrichment" && <EnrichmentTab />}
               {activeTool === "domainFinder" && <DomainFindTab />}
+              {activeTool === "emailVerifier" && <EmailVerifyTab />}
             </motion.div>
           )}
         </div>
