@@ -72,7 +72,9 @@ export default function EmailVerifyTab() {
   const pollJobStatus = async (jobId: string) => {
     const poll = async () => {
       try {
-        const res = await fetch(`/api/emailVerifier?jobId=${jobId}`);
+        const res = await fetch(`/api/emailVerifier?jobId=${jobId}`, {
+          credentials: "include",
+        });
         const data = await res.json();
         if (data.status === "completed") {
           updateCsvWithResults(data.results);
@@ -117,6 +119,7 @@ export default function EmailVerifyTab() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ emails }),
+        credentials: "include",
       });
 
       const data = await res.json();
