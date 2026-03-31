@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { log } from "console";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
@@ -7,6 +8,7 @@ export async function middleware(req: NextRequest) {
       headers: req.headers,
     },
   });
+  console.log("In the middlewware frontend");
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
