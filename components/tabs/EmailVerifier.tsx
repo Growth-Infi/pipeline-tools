@@ -67,7 +67,22 @@ export default function EmailVerifyTab() {
     setStatusMsg("✅ Verification Complete!");
     console.log("CSV Data state updated successfully.");
   };
-
+  const getStatusMessage = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "Initializing...";
+      case "processing":
+        return "Running BrandNav verification...";
+      case "brandav_completed":
+        return "Sending to Reoon...";
+      case "reoon_processing":
+        return "Deep verification (Reoon)...";
+      case "completed":
+        return "Finalizing...";
+      default:
+        return "Processing...";
+    }
+  };
   // Polling Logic
   const pollJobStatus = async (jobId: string) => {
     const poll = async () => {
@@ -76,6 +91,13 @@ export default function EmailVerifyTab() {
           credentials: "include",
         });
         const data = await res.json();
+        setProgress({
+          done: data.progress || 0,
+          total: 100,
+        });
+
+        setStatusMsg(getStatusMessage(data.status));
+
         if (data.status === "completed") {
           updateCsvWithResults(data.results);
           return;
@@ -107,7 +129,7 @@ export default function EmailVerifyTab() {
 
     setIsLoading(true);
     setStatusMsg("Initializing job...");
-    setProgress({ done: 0, total: csvData.length });
+    setProgress({ done: 0, total: 100 });
 
     const emails = csvData
       .map((row) => String(row[emailCol] || "").trim())
@@ -189,16 +211,14 @@ export default function EmailVerifyTab() {
               <span className="flex items-center gap-1">
                 <Loader2 className="w-2 h-2 animate-spin" /> {statusMsg}
               </span>
-              <span>
-                {Math.round((progress.done / (progress.total || 1)) * 100)}%
-              </span>
+              <span>{progress.done}%</span>
             </div>
             <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-emerald-500"
                 initial={{ width: 0 }}
                 animate={{
-                  width: `${(progress.done / (progress.total || 1)) * 100}%`,
+                  width: `${progress.done}%`,
                 }}
               />
             </div>

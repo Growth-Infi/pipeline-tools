@@ -1,3 +1,4 @@
+import { log } from "console";
 import { NextResponse } from "next/server";
 
 const RENDER_URL = process.env.EMAIL_PIPELINE_URL;
@@ -58,6 +59,7 @@ export async function GET(req: Request) {
     });
 
     const data = await response.json();
+    console.log("Got response for job status", data);
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
     console.error("Proxy GET Error:", error);
