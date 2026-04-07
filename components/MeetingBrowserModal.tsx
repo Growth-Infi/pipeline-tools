@@ -31,11 +31,16 @@ export function MeetingBrowserModal({ onClose }: MeetingBrowserModalProps) {
     const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
     const [trelloModalOpen, setTrelloModalOpen] = useState(false);
-
+    const API_KEY = process.env.EMAIL_BCKEND_SECRET_KEY!;
     useEffect(() => {
         const fetchMeetings = async () => {
             try {
-                const res = await fetch('http://localhost:5001/api/tasks/fathom/meetings');
+                const res = await fetch('https://email-pipeline-backend.onrender.com/api/tasks/fathom/meetings', {
+                    method: "GET",
+                    headers: {
+                        "x-api-key": API_KEY,
+                    }
+                });
                 const data = await res.json();
                 console.log('raw data:', data);
                 console.log('items:', data.result?.items);
