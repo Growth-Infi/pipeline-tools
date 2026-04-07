@@ -10,7 +10,7 @@ export async function GET(
 
   try {
     const res = await fetch(
-      `${RENDER_URL}/api/tasks/trello/boards/${boardId}/lists`,
+      `${RENDER_URL}/tasks/trello/boards/${boardId}/lists`,
     );
 
     const data = await res.json();
