@@ -40,12 +40,8 @@ export function TrelloBoardModal({ actionItems, onClose, onSuccess }: TrelloBoar
     useEffect(() => {
         const fetchBoards = async () => {
             try {
-                const res = await fetch('https://email-pipeline-backend.onrender.com/api/tasks/trello/boards', {
-                    method: "GET",
-                    headers: {
-                        "x-api-key": API_KEY,
-                    },
-                });
+                const res = await fetch('/api/trello/boards');
+                if (!res.ok) throw new Error();
                 const data = await res.json();
                 setBoards(data.boards || []);
             } catch {
@@ -56,20 +52,16 @@ export function TrelloBoardModal({ actionItems, onClose, onSuccess }: TrelloBoar
         };
         fetchBoards();
     }, []);
-    const API_KEY = process.env.EMAIL_BCKEND_SECRET_KEY!;
+
     const selectBoard = async (board: Board) => {
         setSelectedBoard(board);
         setSelectedList(null);
         setLists([]);
         setLoadingLists(true);
-
         try {
-            const res = await fetch(`https://email-pipeline-backend.onrender.com/api/tasks/trello/boards/${board.id}/lists`, {
-                method: "GET",
-                headers: {
-                    "x-api-key": API_KEY,
-                },
-            });
+            const res = await fetch(`/api/trello/lists/${board.id}`);
+            console.log(res)
+            if (!res.ok) throw new Error();
             const data = await res.json();
             setLists(data.lists || []);
         } catch {
@@ -79,15 +71,14 @@ export function TrelloBoardModal({ actionItems, onClose, onSuccess }: TrelloBoar
         }
     };
 
-
     const createCards = async () => {
         if (!selectedList) return;
         setCreating(true);
         setError('');
         try {
-            const res = await fetch('https://email-pipeline-backend.onrender.com/api/tasks/trello/cards', {
+            const res = await fetch('/api/trello/cards', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', "x-api-key": API_KEY },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ listId: selectedList.id, actionItems }),
             });
             if (!res.ok) throw new Error();
@@ -126,7 +117,6 @@ export function TrelloBoardModal({ actionItems, onClose, onSuccess }: TrelloBoar
                 </div>
 
                 <div className="p-5 space-y-4 overflow-y-auto">
-                    {/* Success state */}
                     {success && (
                         <div className="flex items-center justify-center gap-2 py-6 text-emerald-400">
                             <CheckCircle2 className="w-5 h-5" />
@@ -160,7 +150,7 @@ export function TrelloBoardModal({ actionItems, onClose, onSuccess }: TrelloBoar
                                                 <Loader2 className="w-3.5 h-3.5 animate-spin" /> Loading…
                                             </div>
                                         ) : (
-                                            <div className="divide-y divide-white/5">
+                                            <div className="divide-y divide-white/5 overflow-y-auto max-h-48 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                                                 {boards.map(board => (
                                                     <button
                                                         key={board.id}
@@ -194,7 +184,7 @@ export function TrelloBoardModal({ actionItems, onClose, onSuccess }: TrelloBoar
                                                 <Loader2 className="w-3.5 h-3.5 animate-spin" /> Loading…
                                             </div>
                                         ) : (
-                                            <div className="divide-y divide-white/5">
+                                            <div className="divide-y divide-white/5 overflow-y-auto max-h-48 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
                                                 {lists.map(list => (
                                                     <button
                                                         key={list.id}
