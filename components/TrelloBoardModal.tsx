@@ -40,7 +40,12 @@ export function TrelloBoardModal({ actionItems, onClose, onSuccess }: TrelloBoar
     useEffect(() => {
         const fetchBoards = async () => {
             try {
-                const res = await fetch('http://localhost:5001/api/tasks/trello/boards');
+                const res = await fetch('https://email-pipeline-backend.onrender.com/api/tasks/trello/boards', {
+                    method: "GET",
+                    headers: {
+                        "x-api-key": API_KEY,
+                    },
+                });
                 const data = await res.json();
                 setBoards(data.boards || []);
             } catch {
@@ -51,14 +56,20 @@ export function TrelloBoardModal({ actionItems, onClose, onSuccess }: TrelloBoar
         };
         fetchBoards();
     }, []);
-
+    const API_KEY = process.env.EMAIL_BCKEND_SECRET_KEY!;
     const selectBoard = async (board: Board) => {
         setSelectedBoard(board);
         setSelectedList(null);
         setLists([]);
         setLoadingLists(true);
+
         try {
-            const res = await fetch(`http://localhost:5001/api/tasks/trello/boards/${board.id}/lists`);
+            const res = await fetch(`https://email-pipeline-backend.onrender.com/api/tasks/trello/boards/${board.id}/lists`, {
+                method: "GET",
+                headers: {
+                    "x-api-key": API_KEY,
+                },
+            });
             const data = await res.json();
             setLists(data.lists || []);
         } catch {
@@ -68,14 +79,15 @@ export function TrelloBoardModal({ actionItems, onClose, onSuccess }: TrelloBoar
         }
     };
 
+
     const createCards = async () => {
         if (!selectedList) return;
         setCreating(true);
         setError('');
         try {
-            const res = await fetch('http://localhost:5001/api/tasks/trello/cards', {
+            const res = await fetch('https://email-pipeline-backend.onrender.com/api/tasks/trello/cards', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', "x-api-key": API_KEY },
                 body: JSON.stringify({ listId: selectedList.id, actionItems }),
             });
             if (!res.ok) throw new Error();
@@ -95,7 +107,7 @@ export function TrelloBoardModal({ actionItems, onClose, onSuccess }: TrelloBoar
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.95, opacity: 0, y: 20 }}
                 transition={{ type: 'spring', duration: 0.5 }}
-                className="w-full max-w-lg bg-[#09090b] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+                className="w-full max-w-2xl bg-[#09090b] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
             >
                 {/* Header */}
                 <div className="flex items-center justify-between p-5 border-b border-white/5 bg-[#0a0a0a]">
@@ -113,7 +125,7 @@ export function TrelloBoardModal({ actionItems, onClose, onSuccess }: TrelloBoar
                     </button>
                 </div>
 
-                <div className="p-5 space-y-5 overflow-y-auto max-h-[60vh]">
+                <div className="p-5 space-y-4 overflow-y-auto">
                     {/* Success state */}
                     {success && (
                         <div className="flex items-center justify-center gap-2 py-6 text-emerald-400">
@@ -127,69 +139,82 @@ export function TrelloBoardModal({ actionItems, onClose, onSuccess }: TrelloBoar
                             {/* Action items preview */}
                             <div className="space-y-1.5">
                                 <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Cards to create</h3>
-                                <div className="space-y-1 max-h-32 overflow-y-auto">
+                                <div className="flex flex-wrap gap-1.5">
                                     {actionItems.map((item, i) => (
-                                        <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-zinc-900/50 border border-white/5">
-                                            <span className="text-[10px] text-zinc-600 font-mono mt-0.5">{i + 1}</span>
-                                            <p className="text-[10px] text-zinc-300 leading-snug">{item.description}</p>
+                                        <div key={i} className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-900/50 border border-white/5">
+                                            <span className="text-[10px] text-zinc-600 font-mono">{i + 1}</span>
+                                            <p className="text-[10px] text-zinc-300 leading-snug max-w-[200px] truncate">{item.description}</p>
                                         </div>
                                     ))}
                                 </div>
                             </div>
 
-                            {/* Board picker */}
-                            <div className="space-y-2">
-                                <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Select Board</h3>
-                                {loadingBoards ? (
-                                    <div className="flex items-center gap-2 text-zinc-500 text-xs py-2">
-                                        <Loader2 className="w-3.5 h-3.5 animate-spin" /> Loading boards…
-                                    </div>
-                                ) : (
-                                    <div className="space-y-1">
-                                        {boards.map(board => (
-                                            <button
-                                                key={board.id}
-                                                onClick={() => selectBoard(board)}
-                                                className={`w-full text-left flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all text-xs ${selectedBoard?.id === board.id
-                                                    ? 'bg-blue-500/10 border-blue-500/30 text-white'
-                                                    : 'bg-zinc-900/40 border-white/5 hover:border-white/10 text-zinc-300'
-                                                    }`}
-                                            >
-                                                {board.name}
-                                                {selectedBoard?.id === board.id && <ChevronRight className="w-3.5 h-3.5 text-blue-400" />}
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* List picker */}
-                            {selectedBoard && (
+                            {/* Board + List picker side by side */}
+                            <div className="grid grid-cols-2 gap-3">
+                                {/* Board picker */}
                                 <div className="space-y-2">
-                                    <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Select List</h3>
-                                    {loadingLists ? (
-                                        <div className="flex items-center gap-2 text-zinc-500 text-xs py-2">
-                                            <Loader2 className="w-3.5 h-3.5 animate-spin" /> Loading lists…
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-1">
-                                            {lists.map(list => (
-                                                <button
-                                                    key={list.id}
-                                                    onClick={() => setSelectedList(list)}
-                                                    className={`w-full text-left flex items-center justify-between px-3 py-2.5 rounded-xl border transition-all text-xs ${selectedList?.id === list.id
-                                                        ? 'bg-blue-500/10 border-blue-500/30 text-white'
-                                                        : 'bg-zinc-900/40 border-white/5 hover:border-white/10 text-zinc-300'
-                                                        }`}
-                                                >
-                                                    {list.name}
-                                                    {selectedList?.id === list.id && <ChevronRight className="w-3.5 h-3.5 text-blue-400" />}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
+                                    <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Board</h3>
+                                    <div className="rounded-xl border border-white/5 bg-zinc-900/30 overflow-hidden">
+                                        {loadingBoards ? (
+                                            <div className="flex items-center gap-2 text-zinc-500 text-xs p-3">
+                                                <Loader2 className="w-3.5 h-3.5 animate-spin" /> Loading…
+                                            </div>
+                                        ) : (
+                                            <div className="divide-y divide-white/5">
+                                                {boards.map(board => (
+                                                    <button
+                                                        key={board.id}
+                                                        onClick={() => selectBoard(board)}
+                                                        className={`w-full text-left flex items-center justify-between px-3 py-2.5 transition-all text-xs ${selectedBoard?.id === board.id
+                                                            ? 'bg-blue-500/10 text-white'
+                                                            : 'hover:bg-white/5 text-zinc-300'
+                                                            }`}
+                                                    >
+                                                        <span className="truncate">{board.name}</span>
+                                                        {selectedBoard?.id === board.id && (
+                                                            <ChevronRight className="w-3.5 h-3.5 text-blue-400 shrink-0 ml-1" />
+                                                        )}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            )}
+
+                                {/* List picker */}
+                                <div className="space-y-2">
+                                    <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">List</h3>
+                                    <div className="rounded-xl border border-white/5 bg-zinc-900/30 overflow-hidden min-h-[80px]">
+                                        {!selectedBoard ? (
+                                            <div className="flex items-center justify-center h-20 text-[10px] text-zinc-600">
+                                                Select a board first
+                                            </div>
+                                        ) : loadingLists ? (
+                                            <div className="flex items-center gap-2 text-zinc-500 text-xs p-3">
+                                                <Loader2 className="w-3.5 h-3.5 animate-spin" /> Loading…
+                                            </div>
+                                        ) : (
+                                            <div className="divide-y divide-white/5">
+                                                {lists.map(list => (
+                                                    <button
+                                                        key={list.id}
+                                                        onClick={() => setSelectedList(list)}
+                                                        className={`w-full text-left flex items-center justify-between px-3 py-2.5 transition-all text-xs ${selectedList?.id === list.id
+                                                            ? 'bg-blue-500/10 text-white'
+                                                            : 'hover:bg-white/5 text-zinc-300'
+                                                            }`}
+                                                    >
+                                                        <span className="truncate">{list.name}</span>
+                                                        {selectedList?.id === list.id && (
+                                                            <ChevronRight className="w-3.5 h-3.5 text-blue-400 shrink-0 ml-1" />
+                                                        )}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
 
                             {error && (
                                 <div className="flex items-center gap-2 text-red-400 text-xs">
