@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Video, CheckSquare, Square, Trello, ChevronRight, Loader2, AlertCircle, Calendar, Users } from 'lucide-react';
+import { X, Video, CheckSquare, Square, Trello, Loader2, AlertCircle, Calendar, Users } from 'lucide-react';
 import { TrelloBoardModal } from './TrelloBoardModal';
+
+const API_BASE = 'http://localhost:5001/api/tasks'; // replace with your backend URL
 
 interface ActionItem {
     description: string;
@@ -27,33 +29,52 @@ interface MeetingBrowserModalProps {
 export function MeetingBrowserModal({ onClose }: MeetingBrowserModalProps) {
     const [meetings, setMeetings] = useState<Meeting[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [error, setError] = useState('');
+    const [nextCursor, setNextCursor] = useState<string | null>(null);
     const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
     const [trelloModalOpen, setTrelloModalOpen] = useState(false);
+    const listRef = useRef<HTMLDivElement>(null);
+
+    const fetchMeetings = async (cursor?: string) => {
+        try {
+            const url = cursor
+                ? `${API_BASE}/fathom/meetings?cursor=${cursor}&limit=10`
+                : `${API_BASE}/fathom/meetings?limit=10`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            const items = (data.result || []).map((m: any) => ({
+                recording_id: m.recording_id,
+                title: m.title,
+                created_at: m.created_at,
+                action_items: m.action_items || [],
+                calendar_invitees: m.calendar_invitees || [],
+            }));
+
+            setMeetings(prev => cursor ? [...prev, ...items] : items);
+            setNextCursor(data.nextCursor || null);
+        } catch {
+            setError('Failed to load meetings');
+        } finally {
+            setLoading(false);
+            setLoadingMore(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchMeetings = async () => {
-            try {
-                const res = await fetch('/api/fathom/meetings');
-                const data = await res.json();
-                console.log('raw data:', data);
-                console.log('items:', data.result?.items);
-                const items = (data.result || []).map((m: any) => ({
-                    recording_id: m.recording_id,
-                    title: m.title,
-                    created_at: m.created_at,
-                    action_items: m.action_items || [],
-                    calendar_invitees: m.calendar_invitees || [],
-                }));
-                setMeetings(items);
-            } catch {
-                setError('Failed to load meetings');
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchMeetings();
     }, []);
+
+    const handleScroll = () => {
+        const el = listRef.current;
+        if (!el || loadingMore || !nextCursor) return;
+        if (el.scrollTop + el.clientHeight >= el.scrollHeight - 40) {
+            setLoadingMore(true);
+            fetchMeetings(nextCursor);
+        }
+    };
 
     const toggleItem = (idx: number) => {
         setSelectedItems(prev => {
@@ -106,7 +127,11 @@ export function MeetingBrowserModal({ onClose }: MeetingBrowserModalProps) {
                 {/* Body */}
                 <div className="flex flex-1 overflow-hidden">
                     {/* Meeting list */}
-                    <div className="w-2/5 border-r border-white/5 overflow-y-auto">
+                    <div
+                        ref={listRef}
+                        onScroll={handleScroll}
+                        className="w-2/5 border-r border-white/5 overflow-y-auto"
+                    >
                         {loading ? (
                             <div className="flex items-center justify-center h-full gap-2 text-zinc-500">
                                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -150,6 +175,16 @@ export function MeetingBrowserModal({ onClose }: MeetingBrowserModalProps) {
                                         )}
                                     </button>
                                 ))}
+
+                                {loadingMore && (
+                                    <div className="flex items-center justify-center py-3 gap-2 text-zinc-600">
+                                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                        <span className="text-[10px]">Loading more…</span>
+                                    </div>
+                                )}
+                                {!loadingMore && !nextCursor && meetings.length > 0 && (
+                                    <p className="text-center text-[10px] text-zinc-700 py-2">All meetings loaded</p>
+                                )}
                             </div>
                         )}
                     </div>
