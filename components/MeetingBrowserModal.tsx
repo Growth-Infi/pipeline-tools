@@ -40,8 +40,8 @@ export function MeetingBrowserModal({ onClose }: MeetingBrowserModalProps) {
     const fetchMeetings = async (cursor?: string) => {
         try {
             const url = cursor
-                ? `${API_BASE}/fathom/meetings?cursor=${cursor}&limit=10`
-                : `${API_BASE}/fathom/meetings?limit=10`;
+                ? `${API_BASE}/fathom/meetings?cursor=${cursor}`
+                : `${API_BASE}/fathom/meetings`;
             const res = await fetch(url);
             const data = await res.json();
 
