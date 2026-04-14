@@ -16,6 +16,7 @@ import CleaningTab from "./tabs/CleaningTab";
 import DomainFindTab from "./tabs/DomainFindTab";
 import EmailVerifyTab from "./tabs/EmailVerifier";
 import MeetingTaskTab from "./tabs/MeetingTasksTab";
+import EmailInvitesTab from "./tabs/EmailInvitesTab";
 
 type ToolId =
   | "data"
@@ -25,6 +26,7 @@ type ToolId =
   | "domainFinder"
   | "emailVerifier"
   | "meetingTasks"
+  | "emailInvites"
 
 interface Tool {
   id: ToolId;
@@ -55,6 +57,7 @@ const TOOLS: Tool[] = [
     color: "text-emerald-400",
   },
   { id: "meetingTasks", label: "Meeting Tasks", icon: Eraser, color: "text-amber-400" },
+  { id: "emailInvites", label: "Email Invites", icon: Eraser, color: "text-amber-400" },
   // { id: 'verify', label: 'Verifier', icon: ShieldCheck, color: 'text-emerald-400' },
 ];
 
@@ -119,6 +122,7 @@ export default function TransformationControls() {
               {activeTool === "domainFinder" && <DomainFindTab />}
               {activeTool === "emailVerifier" && <EmailVerifyTab />}
               {activeTool === "meetingTasks" && <MeetingTaskTab />}
+              {activeTool === "emailInvites" && <EmailInvitesTab />}
             </motion.div>
           )}
         </div>

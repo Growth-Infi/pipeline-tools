@@ -35,21 +35,26 @@ export const Sidebar = () => {
         >
           <LayoutGrid className="w-5 h-5" />
         </button>
+        {/* EMAIL INVITES 
+        <button
+          onClick={() => router.push("/emailInvites")}
+          className={`w-full p-3 rounded-xl transition-all flex justify-center group relative ${pathname === "/emailInvites" ? "bg-white/10 text-white" : "text-zinc-500 hover:text-white hover:bg-white/5"}`}
+          title="Email Invites"
+        >
+          <LayoutGrid className="w-5 h-5" />
+        </button> */}
         {/* WORKSPACE BUTTON */}
         <button
-          onClick={() => {
-            console.log("Workspace clicked");
-            router.push("/workspace");
-          }}
-          className={`w-full p-3 rounded-xl transition-all flex justify-center group relative border ${
-            pathname === "/workspace"
-              ? "bg-white/20 text-white border-blue-500"
-              : "text-zinc-300 hover:text-white hover:bg-white/10 border-transparent"
-          }`}
+          onClick={() => { router.push("/workspace"); }}
+          className={`w-full p-3 rounded-xl transition-all flex justify-center group relative border ${pathname === "/workspace"
+            ? "bg-white/20 text-white border-blue-500"
+            : "text-zinc-300 hover:text-white hover:bg-white/10 border-transparent"
+            }`}
           title="New Transformation"
         >
           <Plus className="w-6 h-6" />
         </button>
+
       </nav>
 
       {/* USER + LOGOUT */}
