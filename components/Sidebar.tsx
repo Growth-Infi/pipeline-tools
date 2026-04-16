@@ -35,14 +35,14 @@ export const Sidebar = () => {
         >
           <LayoutGrid className="w-5 h-5" />
         </button>
-        {/* EMAIL INVITES 
+        {/* EMAIL INVITES */}
         <button
           onClick={() => router.push("/emailInvites")}
           className={`w-full p-3 rounded-xl transition-all flex justify-center group relative ${pathname === "/emailInvites" ? "bg-white/10 text-white" : "text-zinc-500 hover:text-white hover:bg-white/5"}`}
           title="Email Invites"
         >
           <LayoutGrid className="w-5 h-5" />
-        </button> */}
+        </button>
         {/* WORKSPACE BUTTON */}
         <button
           onClick={() => { router.push("/workspace"); }}

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAppStore } from "@/lib/store";
 import { Megaphone, Play, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
 
 const API_BASE = "http://localhost:5000";
 
@@ -44,11 +45,11 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState(false);
+    const { user } = useAuth();
 
     const rawColumns = columnOrder.length > 0 ? columnOrder : Object.keys(csvData[0] || {});
     const columns = rawColumns.filter((col) => col.toLowerCase() !== "status");
 
-    // Auto-detect email column
     useEffect(() => {
         const keywords = ["email", "mail"];
         const detected = columns.find((col) =>
@@ -71,20 +72,23 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
             .filter(Boolean);
 
         try {
-            const res = await fetch(`${API_BASE}/campaigns`, {
+            console.log(user)
+            const res = await fetch(`${API_BASE}/campaign/create`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
+                    user_id: user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973", //for local testing for now
                     name: name.trim(),
                     meet_link: meetLink.trim(),
                     emails: emailList,
                 }),
             });
-
+            console.log(res)
             if (!res.ok) throw new Error();
             setSuccess(true);
             setTimeout(onClose, 1500);
-        } catch {
+        } catch (err) {
+            console.log(err)
             setError("Failed to create campaign. Please try again.");
         } finally {
             setLoading(false);
@@ -172,7 +176,7 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
                                 )}
                                 {!emailCol && (
                                     <p className="text-[10px] text-amber-400 px-1">
-                                        ⚠️ No email column detected. Please select one.
+                                        No email column detected. Please select one.
                                     </p>
                                 )}
                             </div>

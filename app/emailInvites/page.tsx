@@ -27,10 +27,10 @@ export default function EmailInvitesPage() {
             <main className="flex-1 overflow-auto p-6">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
-                    <h1 className="text-2xl font-semibold">Email Campaigns</h1>
+                    {/* <h1 className="text-2xl font-semibold">Email Campaigns</h1>
                     <button className="bg-emerald-500 hover:bg-emerald-600 px-4 py-2 rounded-lg text-sm">
                         + New Campaign
-                    </button>
+                    </button> */}
                 </div>
 
                 {/* Campaign List */}
