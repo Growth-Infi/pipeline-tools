@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Video, CheckSquare, Square, Trello, Loader2, AlertCircle, Calendar, Users } from 'lucide-react';
 import { TrelloBoardModal } from './TrelloBoardModal';
 
-const API_BASE = 'http://localhost:5001/api/tasks'; // replace with your backend URL
+
 
 interface ActionItem {
     description: string;
@@ -40,9 +40,11 @@ export function MeetingBrowserModal({ onClose }: MeetingBrowserModalProps) {
     const fetchMeetings = async (cursor?: string) => {
         try {
             const url = cursor
-                ? `${API_BASE}/fathom/meetings?cursor=${cursor}`
-                : `${API_BASE}/fathom/meetings`;
+                ? `/api/fathom/meetings?cursor=${cursor}`
+                : `/api/fathom/meetings`;
+            console.log(url)
             const res = await fetch(url);
+            console.log(res)
             const data = await res.json();
 
             const items = (data.result || []).map((m: any) => ({
@@ -70,7 +72,7 @@ export function MeetingBrowserModal({ onClose }: MeetingBrowserModalProps) {
     const handleScroll = () => {
         const el = listRef.current;
         if (!el || loadingMore || !nextCursor) return;
-        if (el.scrollTop + el.clientHeight >= el.scrollHeight - 40) {
+        if (el.scrollTop + el.clientHeight >= el.scrollHeight - 100) {
             setLoadingMore(true);
             fetchMeetings(nextCursor);
         }

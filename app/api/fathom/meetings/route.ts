@@ -7,9 +7,8 @@ const API_KEY = process.env.EMAIL_BCKEND_SECRET_KEY!;
 export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
-        const queryString = searchParams.toString();
-        console.log(queryString)
-        const url = `${RENDER_URL}/api/tasks/fathom/meetings${queryString ? `?${queryString}` : ''}`
+        const cursor = searchParams.get("cursor");
+        const url = `${RENDER_URL}/tasks/fathom/meetings${cursor ? `?cursor=${cursor}` : ''}`
 
 
         const res = await fetch(
@@ -21,13 +20,11 @@ export async function GET(request: Request) {
                 },
             }
         );
+
         const data = await res.json();
 
         return NextResponse.json(data);
-    } catch (err) {
-        return NextResponse.json(
-            { error: "Failed to fetch meetings" },
-            { status: 500 },
-        );
+    } catch {
+        throw new ApiError(500, "Failed to fetch meetings")
     }
 }
