@@ -8,6 +8,7 @@ import {
   Settings2,
   Sparkles,
   Mail,
+  Globe,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import EnrichmentTab from "./tabs/EnrichmentTab";
@@ -26,7 +27,7 @@ type ToolId =
   | "domainFinder"
   | "emailVerifier"
   | "meetingTasks"
-  | "emailInvites"
+  | "emailInvites";
 
 interface Tool {
   id: ToolId;
@@ -46,8 +47,8 @@ const TOOLS: Tool[] = [
   },
   {
     id: "domainFinder",
-    label: "domainFinder",
-    icon: Sparkles,
+    label: "Domain Finder",
+    icon: Globe,
     color: "text-amber-400",
   },
   {
@@ -56,8 +57,18 @@ const TOOLS: Tool[] = [
     icon: Mail,
     color: "text-emerald-400",
   },
-  { id: "meetingTasks", label: "Meeting Tasks", icon: Eraser, color: "text-amber-400" },
-  { id: "emailInvites", label: "Email Invites", icon: Eraser, color: "text-amber-400" },
+  {
+    id: "meetingTasks",
+    label: "Meeting Tasks",
+    icon: Eraser,
+    color: "text-amber-400",
+  },
+  {
+    id: "emailInvites",
+    label: "Email Invites",
+    icon: Eraser,
+    color: "text-amber-400",
+  },
   // { id: 'verify', label: 'Verifier', icon: ShieldCheck, color: 'text-emerald-400' },
 ];
 
