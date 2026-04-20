@@ -45,8 +45,9 @@ export default function CampaignDetailPage() {
     }, [user, authLoading]);
 
     useEffect(() => {
+        if (authLoading) return;
         if (!CURRENT_USER_ID) return;
-        console.log(API_BASE)
+
         const fetchCampaign = async () => {
             try {
                 const res = await fetch(`${API_BASE}/campaign/?user_id=${CURRENT_USER_ID}`);
@@ -67,7 +68,7 @@ export default function CampaignDetailPage() {
             }
         };
         fetchCampaign();
-    }, [id]);
+    }, [id, CURRENT_USER_ID, authLoading]);
 
     if (authLoading) return (
         <div className="h-screen bg-[#050505] flex items-center justify-center">

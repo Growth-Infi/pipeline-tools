@@ -41,6 +41,9 @@ export default function EmailInvitesPage() {
     }, [user, authLoading]);
 
     useEffect(() => {
+        if (authLoading) return; // wait for auth
+        if (!CURRENT_USER_ID) return;
+
         const fetchCampaigns = async () => {
             try {
                 console.log(API_BASE)
@@ -55,7 +58,7 @@ export default function EmailInvitesPage() {
             }
         };
         fetchCampaigns();
-    }, [CURRENT_USER_ID]);
+    }, [CURRENT_USER_ID, authLoading]);
 
     if (authLoading) return (
         <div className="h-screen bg-[#050505] flex items-center justify-center">
