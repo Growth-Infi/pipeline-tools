@@ -7,7 +7,7 @@ import { Megaphone, Loader2, AlertCircle, Plus, ChevronRight } from "lucide-reac
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
-const API_BASE = process.env.MEET_INVITE_BACKEND_URL;
+const API_BASE = process.env.NEXT_PUBLIC_MEET_INVITE_BACKEND_URL;
 
 interface Campaign {
     id: string;
@@ -29,19 +29,24 @@ const statusColors: Record<string, string> = {
 
 export default function EmailInvitesPage() {
     const router = useRouter();
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const CURRENT_USER_ID = user?.id;
+    const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
+
+    useEffect(() => {
+        if (!authLoading && !user) router.push("/");
+    }, [user, authLoading]);
 
     useEffect(() => {
         const fetchCampaigns = async () => {
             try {
-                const res = await fetch(`${API_BASE}/?user_id=${CURRENT_USER_ID}`);
-                console.log(res)
+                console.log(API_BASE)
+                const res = await fetch(`${API_BASE}/campaign/?user_id=${CURRENT_USER_ID}`);
                 const data = await res.json();
+                console.log(data)
                 setCampaigns(data);
             } catch {
                 setError("Failed to load campaigns");
@@ -50,7 +55,13 @@ export default function EmailInvitesPage() {
             }
         };
         fetchCampaigns();
-    }, []);
+    }, [CURRENT_USER_ID]);
+
+    if (authLoading) return (
+        <div className="h-screen bg-[#050505] flex items-center justify-center">
+            <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
+        </div>
+    );
 
     const formatDate = (iso: string) =>
         new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });

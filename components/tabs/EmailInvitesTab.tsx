@@ -6,7 +6,7 @@ import { Megaphone, Play, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = process.env.NEXT_PUBLIC_MEET_INVITE_BACKEND_URL;
 
 export default function EmailInvitesTab() {
     const [modalOpen, setModalOpen] = useState(false);

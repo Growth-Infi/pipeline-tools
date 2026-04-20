@@ -7,7 +7,7 @@ import { Loader2, AlertCircle, ArrowLeft, Play, Pause, RotateCcw, ExternalLink, 
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
-const API_BASE = process.env.MEET_INVITE_BACKEND_URL;
+const API_BASE = process.env.NEXT_PUBLIC_MEET_INVITE_BACKEND_URL;
 
 interface Campaign {
     id: string;
@@ -31,19 +31,25 @@ const statusConfig: Record<string, { label: string; classes: string }> = {
 export default function CampaignDetailPage() {
     const { id } = useParams<{ id: string }>();
     const router = useRouter();
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const [campaign, setCampaign] = useState<Campaign | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [actionError, setActionError] = useState("");
 
-    const CURRENT_USER_ID = user?.id;
+    const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
 
     useEffect(() => {
+        if (!authLoading && !user) router.push("/");
+    }, [user, authLoading]);
+
+    useEffect(() => {
+        if (!CURRENT_USER_ID) return;
+        console.log(API_BASE)
         const fetchCampaign = async () => {
             try {
-                const res = await fetch(`${API_BASE}/?user_id=${CURRENT_USER_ID}`);
+                const res = await fetch(`${API_BASE}/campaign/?user_id=${CURRENT_USER_ID}`);
                 const data: Campaign[] = await res.json();
                 const found = data.find(c => c.id === id);
                 if (!found) throw new Error("Not found");
@@ -63,6 +69,12 @@ export default function CampaignDetailPage() {
         fetchCampaign();
     }, [id]);
 
+    if (authLoading) return (
+        <div className="h-screen bg-[#050505] flex items-center justify-center">
+            <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
+        </div>
+    );
+
     const handleAction = async (action: "start" | "pause" | "resume") => {
         if (!campaign) return;
         setActionLoading(action);
@@ -74,7 +86,7 @@ export default function CampaignDetailPage() {
         setCampaign(prev => prev ? { ...prev, status: optimisticStatus as Campaign["status"] } : prev);
 
         try {
-            const res = await fetch(`${API_BASE}/${campaign.id}/${action}`, {
+            const res = await fetch(`${API_BASE}/campaign/${campaign.id}/${action}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: action === "start" ? JSON.stringify({ user_id: campaign.user_id }) : undefined,
