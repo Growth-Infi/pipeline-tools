@@ -10,7 +10,7 @@ export const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  // 🔍 DEBUG LOGS
+
   useEffect(() => {
     // console.log("===== SIDEBAR DEBUG =====");
     // console.log("pathname:", pathname);

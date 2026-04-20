@@ -38,21 +38,21 @@ export default function CampaignDetailPage() {
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [actionError, setActionError] = useState("");
 
-    const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
+    const CURRENT_USER_ID = user?.id;
 
     useEffect(() => {
         const fetchCampaign = async () => {
             try {
-                // const res = await fetch(`${API_BASE}/?user_id=${CURRENT_USER_ID}`);
-                // const data: Campaign[] = await res.json();
-                // const found = data.find(c => c.id === id);
-                // if (!found) throw new Error("Not found");
-                // setCampaign(found);
+                const res = await fetch(`${API_BASE}/?user_id=${CURRENT_USER_ID}`);
+                const data: Campaign[] = await res.json();
+                const found = data.find(c => c.id === id);
+                if (!found) throw new Error("Not found");
+                setCampaign(found);
 
-                const res = await fetch(`${API_BASE}/${id}`);
-                const data = await res.json();
-                if (!data) throw new Error("Not found");
-                setCampaign(data);
+                // const res = await fetch(`${API_BASE}/${id}`);
+                // const data = await res.json();
+                // if (!data) throw new Error("Not found");
+                // setCampaign(data);
             } catch {
                 setError("Failed to load campaign");
             } finally {
@@ -79,7 +79,7 @@ export default function CampaignDetailPage() {
                 body: action === "start" ? JSON.stringify({ user_id: campaign.user_id }) : undefined,
             });
             if (!res.ok) throw new Error();
-            // TODO: once intern returns updated campaign, use: const updated = await res.json(); setCampaign(prev => prev ? { ...prev, ...updated } : prev);
+
         } catch {
             // rollback on error
             setCampaign(prev => prev ? { ...prev, status: previousStatus } : prev);
