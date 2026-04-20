@@ -7,7 +7,7 @@ import { Megaphone, Loader2, AlertCircle, Plus, ChevronRight } from "lucide-reac
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
-const API_BASE = "http://localhost:5000/campaign";
+const API_BASE = process.env.MEET_INVITE_BACKEND_URL;
 
 interface Campaign {
     id: string;
@@ -34,7 +34,7 @@ export default function EmailInvitesPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
+    const CURRENT_USER_ID = user?.id;
 
     useEffect(() => {
         const fetchCampaigns = async () => {

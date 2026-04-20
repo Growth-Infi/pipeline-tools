@@ -7,7 +7,7 @@ import { Loader2, AlertCircle, ArrowLeft, Play, Pause, RotateCcw, ExternalLink, 
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
-const API_BASE = "http://localhost:5000/campaign";
+const API_BASE = process.env.MEET_INVITE_BACKEND_URL;
 
 interface Campaign {
     id: string;
@@ -53,7 +53,8 @@ export default function CampaignDetailPage() {
                 // const data = await res.json();
                 // if (!data) throw new Error("Not found");
                 // setCampaign(data);
-            } catch {
+            } catch (err) {
+                console.log(err)
                 setError("Failed to load campaign");
             } finally {
                 setLoading(false);
