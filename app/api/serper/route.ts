@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 const API_KEY = process.env.SERPER_API_KEY!;
 const CONCURRENCY = 1;
-console.log("API KEY:", API_KEY);
+// console.log("API KEY:", API_KEY);
+if (!API_KEY) {
+  console.error("❌ SERPER_API_KEY missing");
+}
 // simple in-memory cache for speed boost
 const cache = new Map<string, string>();
 
