@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
-import { Megaphone, Loader2, AlertCircle, Plus, ChevronRight } from "lucide-react";
+import { Megaphone, Loader2, AlertCircle, Mail, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
@@ -36,9 +36,9 @@ export default function EmailInvitesPage() {
 
     const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
 
-    useEffect(() => {
-        if (!authLoading && !user) router.push("/");
-    }, [user, authLoading]);
+    // useEffect(() => {
+    //     if (!authLoading && !user) router.push("/");
+    // }, [user, authLoading]);
 
     useEffect(() => {
         if (authLoading) return; // wait for auth
@@ -60,11 +60,11 @@ export default function EmailInvitesPage() {
         fetchCampaigns();
     }, [CURRENT_USER_ID, authLoading]);
 
-    if (authLoading) return (
-        <div className="h-screen bg-[#050505] flex items-center justify-center">
-            <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
-        </div>
-    );
+    // if (authLoading) return (
+    //     <div className="h-screen bg-[#050505] flex items-center justify-center">
+    //         <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
+    //     </div>
+    // );
 
     const formatDate = (iso: string) =>
         new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
@@ -84,6 +84,13 @@ export default function EmailInvitesPage() {
                         <Plus className="w-3.5 h-3.5" />
                         New Campaign
                     </button> */}
+                    <button
+                        onClick={() => router.push("/emailSenders")}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition-all text-xs font-bold text-zinc-300"
+                    >
+                        <Mail className="w-3.5 h-3.5" />
+                        Email Senders
+                    </button>
                 </div>
 
                 {loading && (
@@ -159,3 +166,6 @@ export default function EmailInvitesPage() {
         </div>
     );
 }
+
+
+
