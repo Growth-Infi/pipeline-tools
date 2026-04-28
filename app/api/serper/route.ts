@@ -1,8 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 const API_KEY = process.env.SERPER_API_KEY!;
 const CONCURRENCY = 1;
-
+// console.log("API KEY:", API_KEY);
+if (!API_KEY) {
+  console.error("❌ SERPER_API_KEY missing");
+}
 // simple in-memory cache for speed boost
 const cache = new Map<string, string>();
 
@@ -49,12 +52,11 @@ async function getDomain(company: string, retries = 2): Promise<string> {
 
     cache.set(company, domain);
     return domain;
-
   } catch (err) {
     console.error("⚠️ Fetch error for:", company, err);
 
     if (retries > 0) {
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 1000));
       return getDomain(company, retries - 1);
     }
 
@@ -78,7 +80,6 @@ export async function POST(req: NextRequest) {
     const MAX_FAILS = 15;
 
     for (let i = 0; i < companies.length; i += CONCURRENCY) {
-
       // NEW: early stop condition
       if (failCount >= MAX_FAILS) {
         console.warn("🛑 Too many failures, stopping early");
@@ -87,9 +88,7 @@ export async function POST(req: NextRequest) {
 
       const batch = companies.slice(i, i + CONCURRENCY);
 
-      const batchResults = await Promise.all(
-        batch.map(c => getDomain(c))
-      );
+      const batchResults = await Promise.all(batch.map((c) => getDomain(c)));
 
       batchResults.forEach((res, idx) => {
         results[i + idx] = res;
@@ -101,12 +100,11 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       domains: results,
       stoppedEarly: failCount >= MAX_FAILS, // returns true if exceeds
-      failCount
+      failCount,
     });
-
   } catch (e: any) {
     console.error("🚨 API error:", e);
     return NextResponse.json({ error: e.message }, { status: 500 });
