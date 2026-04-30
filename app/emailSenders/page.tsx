@@ -29,11 +29,11 @@ export default function EmailSendersPage() {
     const [error, setError] = useState("");
     const [togglingId, setTogglingId] = useState<string | null>(null);
 
-    const CURRENT_USER_ID = user?.id || "118a7f14-7948-4947-b6a1-54899455f932";
+    const CURRENT_USER_ID = user?.id;
 
-    // useEffect(() => {
-    //     if (!authLoading && !user) router.push("/");
-    // }, [user, authLoading]);
+    useEffect(() => {
+        if (!authLoading && !user) router.push("/");
+    }, [user, authLoading]);
 
     useEffect(() => {
         if (authLoading || !CURRENT_USER_ID) return;
@@ -89,11 +89,11 @@ export default function EmailSendersPage() {
         });
     };
 
-    // if (authLoading || loading) return (
-    //     <div className="h-screen bg-[#050505] flex items-center justify-center">
-    //         <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
-    //     </div>
-    // );
+    if (authLoading || loading) return (
+        <div className="h-screen bg-[#050505] flex items-center justify-center">
+            <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
+        </div>
+    );
 
     return (
         <div className="h-screen bg-[#050505] text-white flex overflow-hidden">

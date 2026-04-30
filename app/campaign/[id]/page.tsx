@@ -38,11 +38,11 @@ export default function CampaignDetailPage() {
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [actionError, setActionError] = useState("");
 
-    const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
+    const CURRENT_USER_ID = user?.id;
 
-    // useEffect(() => {
-    //     if (!authLoading && !user) router.push("/");
-    // }, [user, authLoading]);
+    useEffect(() => {
+        if (!authLoading && !user) router.push("/");
+    }, [user, authLoading]);
 
     useEffect(() => {
         if (authLoading) return;
@@ -70,11 +70,11 @@ export default function CampaignDetailPage() {
         fetchCampaign();
     }, [id, CURRENT_USER_ID, authLoading]);
 
-    // if (authLoading) return (
-    //     <div className="h-screen bg-[#050505] flex items-center justify-center">
-    //         <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
-    //     </div>
-    // );
+    if (authLoading) return (
+        <div className="h-screen bg-[#050505] flex items-center justify-center">
+            <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
+        </div>
+    );
 
     const handleAction = async (action: "start" | "pause" | "resume") => {
         if (!campaign) return;

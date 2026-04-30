@@ -9,7 +9,7 @@ const PROMPT_BRAND_KEYWORDS = `You are a B2B data cleaner. Your job is to clean 
 
 Rules:
 - Remove legal suffixes: Inc, Ltd, LLC, Pvt Ltd, Corp, Plc, Srl, GmbH, Limited, etc.
-- Remove generic descriptors at the end: Solutions Group, Software & Services, Data Solutions, Technologies (only if something cleaner remains)
+- Remove generic descriptors at the end: Solutions Group, Software & Services, Data Solutions, Technologies, Company, Systems, AI, analytics (only if something cleaner remains)
 - If the name has a bracketed expansion like "PW (PhysicsWallah)", return the expansion: "PhysicsWallah"
 - Never create acronyms — if the original is "Tata Consultancy Services", return "Tata Consultancy Services"
 - Never shorten a name that is already clean
@@ -18,19 +18,21 @@ Rules:
 
 Examples:
 "Laplink Software, Inc" → "Laplink"
-"Yorosis Technologies Inc" → "Yorosis Technologies"
-"Wise Systems, Inc" → "Wise Systems"
+"Yorosis Technologies Inc" → "Yorosis"
+"Wise Systems, Inc" → "Wise"
 "Deerhold Ltd" → "Deerhold"
 "Rldatix Data Solutions Group" → "Rldatix"
 "Tritech Software & Services" → "Tritech"
 "Cognis Solutions Pvt Ltd" → "Cognis"
 "Geek Genix Llc" → "Geek Genix"
+"All India Council for Technical Education (AICTE)" -> "All India Council for Technical Education"
 "Abalta Technologies, Inc" → "Abalta Technologies"
 "98point6 Technologies Inc" → "98point6"
 "Copper" → "Copper"
 "Whop" → "Whop"
-"Instantly.Ai" → "Instantly.ai"
-"Gnani.Ai" → "Gnani.ai"
+"Tata ClassEdge (India)" → "Tata ClassEdge"
+"Instantly.Ai" → "Instantly"
+"Gnani.Ai" → "Gnani"
 "Solvex Dominicana, Srl" → "Solvex"
 "Onecause, A Bonterra Company" → "Onecause"
 "Ionic An Outsystems Company" → "Ionic"`;
@@ -176,6 +178,7 @@ export default function CleaningTab() {
         const newData = [...csvData];
         const BATCH_SIZE = 10;
         const CONCURRENCY = 5;
+        const newCol = companyCol + " clean"
 
         const processBatch = async (startIdx: number) => {
             const batch = [];
@@ -187,7 +190,7 @@ export default function CleaningTab() {
                     batch.push(`${batch.length + 1}. ${raw}`);
                     indices.push(i);
                 } else {
-                    newData[i] = { ...newData[i], company_clean: '' };
+                    newData[i] = { ...newData[i], [newCol]: '' };
                     setCleaningProgress(p => ({ ...p, done: p.done + 1 }));
                 }
             }
@@ -214,14 +217,14 @@ export default function CleaningTab() {
                     const line = lines[i]?.replace(/^\d+\.\s*/, '').trim();
                     newData[rowIdx] = {
                         ...newData[rowIdx],
-                        company_clean: line || String(newData[rowIdx][companyCol])
+                        [newCol]: line || String(newData[rowIdx][companyCol])
                     };
                 });
             } catch {
                 indices.forEach(rowIdx => {
                     newData[rowIdx] = {
                         ...newData[rowIdx],
-                        company_clean: String(newData[rowIdx][companyCol])
+                        [newCol]: String(newData[rowIdx][companyCol])
                     };
                 });
             }

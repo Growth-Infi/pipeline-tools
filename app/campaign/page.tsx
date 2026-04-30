@@ -34,11 +34,11 @@ export default function EmailInvitesPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
+    const CURRENT_USER_ID = user?.id;
 
-    // useEffect(() => {
-    //     if (!authLoading && !user) router.push("/");
-    // }, [user, authLoading]);
+    useEffect(() => {
+        if (!authLoading && !user) router.push("/");
+    }, [user, authLoading]);
 
     useEffect(() => {
         if (authLoading) return; // wait for auth
@@ -60,11 +60,11 @@ export default function EmailInvitesPage() {
         fetchCampaigns();
     }, [CURRENT_USER_ID, authLoading]);
 
-    // if (authLoading) return (
-    //     <div className="h-screen bg-[#050505] flex items-center justify-center">
-    //         <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
-    //     </div>
-    // );
+    if (authLoading) return (
+        <div className="h-screen bg-[#050505] flex items-center justify-center">
+            <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
+        </div>
+    );
 
     const formatDate = (iso: string) =>
         new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
