@@ -163,43 +163,73 @@ export default function EnrichmentTab() {
         setEnrichRunning(true);
         setEnrichProgress({ done: 0, total: newData.length, errors: 0 });
 
-        try {
-            await Promise.all(csvData.map(async (row, rowIdx) => {
-                const interpolated = enrichPrompt.replace(/\{([^}]+)\}/g, (_, field) => {
-                    return String(row[field.trim()] ?? '');
-                });
+        const CONCURRENCY = 3; // dropped from 5 → 3, easier on rate limits
+        const MAX_RETRIES = 4;
+        const url = claudeModels.includes(enrichModel) ? '/api/claude' : '/api/openai';
+
+        const sleep = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+        const processRow = async (row: Record<string, unknown>, rowIdx: number) => {
+            const interpolated = enrichPrompt.replace(/\{([^}]+)\}/g, (_, field) =>
+                String(row[field.trim()] ?? '')
+            );
+
+            let lastError: unknown;
+            for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+                if (attempt > 0) {
+                    // exponential backoff: 2s, 4s, 8s
+                    await sleep(Math.pow(2, attempt) * 1000);
+                }
                 try {
-                    const url = claudeModels.includes(enrichModel) ? '/api/claude' : '/api/openai';
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             messages: [
                                 { role: 'system', content: ENHANCE_SYSTEM_PROMPT },
-                                { role: 'user', content: interpolated }
+                                { role: 'user', content: interpolated },
                             ],
                             model: enrichModel,
                             max_tokens: 200,
                         }),
                     });
+
+                    // treat 5xx as retryable, 4xx as fatal
+                    if (response.status >= 500) {
+                        lastError = `HTTP ${response.status}`;
+                        continue; // retry
+                    }
+                    if (!response.ok) {
+                        // 4xx — no point retrying
+                        break;
+                    }
+
                     const genData = await response.json();
                     newData[rowIdx] = { ...newData[rowIdx], [outputColumn]: genData.result ?? '' };
                     setEnrichProgress(p => ({ ...p, done: p.done + 1 }));
                     setCsvData([...newData]);
-                } catch {
-                    newData[rowIdx] = { ...newData[rowIdx], [outputColumn]: '' };
-                    setEnrichProgress(p => ({ ...p, errors: p.errors + 1 }));
-                    setCsvData([...newData]);
+                    return; // success, exit retry loop
+                } catch (e) {
+                    lastError = e;
+                    // network error — also retryable
                 }
-            }));
-            setEnrichRunning(false);
-            setCsvData([...newData]);
-        } catch {
-            setEnrichRunning(false);
-            setCsvData([...newData]);
-        }
-    };
+            }
 
+            // all retries exhausted
+            console.warn(`Row ${rowIdx} failed after ${MAX_RETRIES} attempts:`, lastError);
+            newData[rowIdx] = { ...newData[rowIdx], [outputColumn]: '' };
+            setEnrichProgress(p => ({ ...p, done: p.done + 1, errors: p.errors + 1 }));
+            setCsvData([...newData]);
+        };
+
+        for (let i = 0; i < csvData.length; i += CONCURRENCY) {
+            await Promise.all(
+                csvData.slice(i, i + CONCURRENCY).map((row, j) => processRow(row, i + j))
+            );
+        }
+
+        setEnrichRunning(false);
+    };
     return (
         <div className="p-4 space-y-2">
 

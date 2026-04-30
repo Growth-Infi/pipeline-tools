@@ -12,6 +12,7 @@ interface PromptEditorProps {
 export function PromptEditor({ value, onChange, columns, placeholder, className }: PromptEditorProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const mirrorRef = useRef<HTMLDivElement>(null);
     const [dropdown, setDropdown] = useState<{ open: boolean; query: string; top: number; left: number }>({
         open: false, query: '', top: 0, left: 0,
     });
@@ -21,7 +22,6 @@ export function PromptEditor({ value, onChange, columns, placeholder, className 
         c.toLowerCase().includes(dropdown.query.toLowerCase())
     );
 
-    // Detect slash and position dropdown
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const ta = e.target;
         onChange(ta.value);
@@ -30,10 +30,9 @@ export function PromptEditor({ value, onChange, columns, placeholder, className 
         const textBefore = ta.value.slice(0, cursor);
         const slashMatch = textBefore.match(/\/(\w*)$/);
 
-        if (slashMatch) {
-            // Get caret pixel position
-            const { top, left } = getCaretCoords(ta, cursor);
-            setDropdown({ open: true, query: slashMatch[1], top, left });
+        if (slashMatch && containerRef.current) {
+            const coords = getCaretCoordsRelativeToContainer(ta, containerRef.current, cursor);
+            setDropdown({ open: true, query: slashMatch[1], top: coords.top, left: coords.left });
             setActiveIdx(0);
         } else {
             setDropdown(d => ({ ...d, open: false }));
@@ -49,10 +48,9 @@ export function PromptEditor({ value, onChange, columns, placeholder, className 
         const newVal = ta.value.slice(0, slashIdx) + `{${col}}` + ta.value.slice(cursor);
         onChange(newVal);
         setDropdown(d => ({ ...d, open: false }));
-        // restore focus & move cursor after inserted token
         setTimeout(() => {
             ta.focus();
-            const pos = slashIdx + col.length + 2; // +2 for { }
+            const pos = slashIdx + col.length + 2;
             ta.setSelectionRange(pos, pos);
         }, 0);
     }, [onChange]);
@@ -68,15 +66,20 @@ export function PromptEditor({ value, onChange, columns, placeholder, className 
         if (e.key === 'Escape') setDropdown(d => ({ ...d, open: false }));
     };
 
-    // Render field references as highlighted chips inside the textarea overlay
-    // (We use a simple highlight approach: the actual textarea is transparent text,
-    //  a div behind mirrors the content with colored spans)
+    const handleScroll = () => {
+        if (textareaRef.current && mirrorRef.current) {
+            mirrorRef.current.scrollTop = textareaRef.current.scrollTop;
+        }
+        setDropdown(d => ({ ...d, open: false }));
+    };
+
     const parts = value.split(/(\{[^}]+\})/g);
 
     return (
         <div ref={containerRef} className={`relative ${className ?? ''}`}>
-            {/* Mirror div for highlighted tokens — sits behind textarea */}
+            {/* Mirror div for highlighted tokens */}
             <div
+                ref={mirrorRef}
                 aria-hidden
                 className="absolute inset-0 p-4 text-xs font-mono leading-relaxed pointer-events-none overflow-hidden whitespace-pre-wrap break-words"
                 style={{ color: 'transparent' }}
@@ -93,6 +96,7 @@ export function PromptEditor({ value, onChange, columns, placeholder, className 
                 value={value}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
+                onScroll={handleScroll}
                 placeholder={placeholder}
                 className="relative w-full h-52 bg-transparent border border-white/10 rounded-xl p-4 text-xs font-mono text-zinc-300 focus:outline-none focus:border-violet-500/50 resize-none leading-relaxed z-10"
                 style={{ caretColor: 'white' }}
@@ -135,26 +139,44 @@ export function PromptEditor({ value, onChange, columns, placeholder, className 
     );
 }
 
-function getCaretCoords(textarea: HTMLTextAreaElement, pos: number) {
-    const div = document.createElement('div');
+function getCaretCoordsRelativeToContainer(
+    textarea: HTMLTextAreaElement,
+    container: HTMLElement,
+    pos: number
+) {
     const style = window.getComputedStyle(textarea);
-    ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'padding', 'border', 'boxSizing', 'whiteSpace', 'wordBreak', 'overflowWrap', 'width'].forEach(p => {
-        (div.style as any)[p] = (style as any)[p];
-    });
-    div.style.position = 'absolute';
-    div.style.visibility = 'hidden';
-    div.style.whiteSpace = 'pre-wrap';
-    div.textContent = textarea.value.slice(0, pos);
+
+    const mirror = document.createElement('div');
+
+    (['fontFamily', 'fontSize', 'fontWeight', 'lineHeight',
+        'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+        'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth',
+        'boxSizing', 'whiteSpace', 'wordBreak', 'overflowWrap', 'width'] as const
+    ).forEach(p => { (mirror.style as any)[p] = (style as any)[p]; });
+
+    mirror.style.position = 'absolute';
+    mirror.style.top = '0';
+    mirror.style.left = '0';
+    mirror.style.visibility = 'hidden';
+    mirror.style.pointerEvents = 'none';
+    mirror.style.whiteSpace = 'pre-wrap';
+    mirror.style.wordBreak = 'break-word';
+    mirror.style.overflow = 'hidden';
+    mirror.style.height = 'auto';
+
+    const textNode = document.createTextNode(textarea.value.slice(0, pos));
+    mirror.appendChild(textNode);
+
     const span = document.createElement('span');
-    span.textContent = '|';
-    div.appendChild(span);
-    document.body.appendChild(div);
-    const taRect = textarea.getBoundingClientRect();
-    const spanRect = span.getBoundingClientRect();
-    const divRect = div.getBoundingClientRect();
-    document.body.removeChild(div);
-    return {
-        top: spanRect.top - divRect.top - textarea.scrollTop,
-        left: spanRect.left - divRect.left,
-    };
+    span.textContent = '\u200b';
+    mirror.appendChild(span);
+
+    container.appendChild(mirror);
+
+    const top = span.offsetTop - textarea.scrollTop;
+    const left = span.offsetLeft;
+
+    container.removeChild(mirror);
+
+    return { top, left };
 }
