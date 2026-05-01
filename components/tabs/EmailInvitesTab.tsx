@@ -344,28 +344,86 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
                       senders...
                     </div>
                   ) : senders.length > 0 ? (
-                    senders.map((s) => (
-                      <label
-                        key={s.id}
-                        className="flex items-center gap-2 cursor-pointer group"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedSenderIds.includes(s.id)}
-                          onChange={(e) => {
-                            setSelectedSenderIds(
-                              e.target.checked
-                                ? [...selectedSenderIds, s.id]
-                                : selectedSenderIds.filter((id) => id !== s.id),
-                            );
-                          }}
-                          className="w-3 h-3 rounded bg-zinc-800 border-white/10 text-rose-500 focus:ring-0"
-                        />
-                        <span className="text-[11px] text-zinc-400 group-hover:text-zinc-200 transition-colors">
-                          {s.email}
-                        </span>
-                      </label>
-                    ))
+                    senders.map((s) => {
+                      const isSelected = selectedSenderIds.includes(s.id);
+
+                      return (
+                        <label
+                          key={s.id}
+                          className={`flex items-center justify-between px-3 py-2 rounded-lg border cursor-pointer transition-all group
+        ${
+          isSelected
+            ? "bg-rose-500/10 border-rose-500/40 shadow-sm"
+            : "bg-zinc-900/40 border-white/5 hover:border-white/20 hover:bg-white/5"
+        }`}
+                        >
+                          <div className="flex items-center gap-2 overflow-hidden">
+                            {/* Avatar circle */}
+                            <div
+                              className={`w-6 h-6 flex items-center justify-center rounded-full text-[10px] font-bold
+            ${
+              isSelected
+                ? "bg-rose-500/20 text-rose-300"
+                : "bg-zinc-800 text-zinc-400"
+            }`}
+                            >
+                              {s.email?.[0]?.toUpperCase()}
+                            </div>
+
+                            {/* Email */}
+                            <span
+                              className={`text-[11px] truncate transition-colors
+            ${
+              isSelected
+                ? "text-rose-200"
+                : "text-zinc-400 group-hover:text-zinc-200"
+            }`}
+                            >
+                              {s.email}
+                            </span>
+                          </div>
+
+                          {/* Custom checkbox */}
+                          <div className="relative flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={(e) => {
+                                setSelectedSenderIds(
+                                  e.target.checked
+                                    ? [...selectedSenderIds, s.id]
+                                    : selectedSenderIds.filter(
+                                        (id) => id !== s.id,
+                                      ),
+                                );
+                              }}
+                              className="absolute opacity-0 w-0 h-0"
+                            />
+
+                            <div
+                              className={`w-4 h-4 rounded border flex items-center justify-center transition-all
+            ${
+              isSelected
+                ? "bg-rose-500 border-rose-500"
+                : "border-white/20 bg-transparent group-hover:border-white/40"
+            }`}
+                            >
+                              {isSelected && (
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="3"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M5 13l4 4L19 7" />
+                                </svg>
+                              )}
+                            </div>
+                          </div>
+                        </label>
+                      );
+                    })
                   ) : (
                     <p className="text-[10px] text-amber-500/80">
                       No active senders. Connect one in Senders page.

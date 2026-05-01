@@ -9,6 +9,7 @@ import {
   Sparkles,
   Mail,
   Globe,
+  CalendarPlus,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import EnrichmentTab from "./tabs/EnrichmentTab";
@@ -66,7 +67,7 @@ const TOOLS: Tool[] = [
   {
     id: "emailInvites",
     label: "Email Invites",
-    icon: Eraser,
+    icon: CalendarPlus,
     color: "text-amber-400",
   },
   // { id: 'verify', label: 'Verifier', icon: ShieldCheck, color: 'text-emerald-400' },
