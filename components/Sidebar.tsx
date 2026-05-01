@@ -2,14 +2,13 @@
 
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { LogOut, LayoutGrid, Plus, User as UserIcon } from "lucide-react";
+import { LogOut, LayoutGrid, Plus, User as UserIcon, Send } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 export const Sidebar = () => {
   const { user, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-
 
   useEffect(() => {
     // console.log("===== SIDEBAR DEBUG =====");
@@ -41,20 +40,22 @@ export const Sidebar = () => {
           className={`w-full p-3 rounded-xl transition-all flex justify-center group relative ${pathname === "/emailInvites" ? "bg-white/10 text-white" : "text-zinc-500 hover:text-white hover:bg-white/5"}`}
           title="Email Invites"
         >
-          <LayoutGrid className="w-5 h-5" />
+          <Send className="w-5 h-5" />
         </button>
         {/* WORKSPACE BUTTON */}
         <button
-          onClick={() => { router.push("/workspace"); }}
-          className={`w-full p-3 rounded-xl transition-all flex justify-center group relative border ${pathname === "/workspace"
-            ? "bg-white/20 text-white border-blue-500"
-            : "text-zinc-300 hover:text-white hover:bg-white/10 border-transparent"
-            }`}
+          onClick={() => {
+            router.push("/workspace");
+          }}
+          className={`w-full p-3 rounded-xl transition-all flex justify-center group relative border ${
+            pathname === "/workspace"
+              ? "bg-white/20 text-white border-blue-500"
+              : "text-zinc-300 hover:text-white hover:bg-white/10 border-transparent"
+          }`}
           title="New Transformation"
         >
           <Plus className="w-6 h-6" />
         </button>
-
       </nav>
 
       {/* USER + LOGOUT */}

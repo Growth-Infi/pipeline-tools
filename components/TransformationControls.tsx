@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Database,
   ShieldCheck,
@@ -18,7 +18,7 @@ import DomainFindTab from "./tabs/DomainFindTab";
 import EmailVerifyTab from "./tabs/EmailVerifier";
 import MeetingTaskTab from "./tabs/MeetingTasksTab";
 import EmailInvitesTab from "./tabs/EmailInvitesTab";
-
+import { useSearchParams } from "next/navigation";
 type ToolId =
   | "data"
   | "clean"
