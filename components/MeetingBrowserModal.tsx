@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Video, CheckSquare, Square, Loader2, AlertCircle, Calendar, Users, BrainCircuit, BookOpen, CheckCircle2 } from 'lucide-react';
 
-const API_BASE = process.env.EMAIL_PIPELINE_URL;
+const API_BASE = process.env.NEXT_PUBLIC_EMAIL_PIPELINE_URL!
 
 interface Task {
   title: string;
@@ -43,8 +43,8 @@ export function MeetingBrowserModal({ onClose }: MeetingBrowserModalProps) {
   const fetchMeetings = async (cursor?: string) => {
     try {
       const url = cursor
-        ? `${API_BASE}/fathom/meetings?cursor=${cursor}`
-        : `${API_BASE}/fathom/meetings`;
+        ? `${API_BASE}/tasks/fathom/meetings?cursor=${cursor}`
+        : `${API_BASE}/tasks/fathom/meetings`;
       const res = await fetch(url);
       const data = await res.json();
 
@@ -85,7 +85,7 @@ export function MeetingBrowserModal({ onClose }: MeetingBrowserModalProps) {
     setSelectedTasks(new Set());
 
     try {
-      const res = await fetch(`${API_BASE}/fathom/meetings/${meeting.recording_id}/tasks?title=${encodeURIComponent(meeting.title)}`);
+      const res = await fetch(`${API_BASE}/tasks/fathom/meetings/${meeting.recording_id}/tasks?title=${encodeURIComponent(meeting.title)}`);
       const data = await res.json();
       console.log(data)
       const extracted: Task[] = data.actionItems.tasks || [];
@@ -119,7 +119,7 @@ export function MeetingBrowserModal({ onClose }: MeetingBrowserModalProps) {
     const selectedTaskList = [...selectedTasks].map(i => tasks[i]);
 
     try {
-      const res = await fetch(`${API_BASE}/notion/createPage`, {
+      const res = await fetch(`${API_BASE}/tasks/notion/createPage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -130,11 +130,13 @@ export function MeetingBrowserModal({ onClose }: MeetingBrowserModalProps) {
           }
         }),
       });
-      if (!res.ok) throw new Error();
+      const data = await res.json();
+      console.log('Notion response:', data);
+      if (!res.ok) throw new Error(data.message);
       setStage('success');
       setTimeout(onClose, 2000);
     } catch (err) {
-      console.log(err)
+      console.log("Notion error:", err)
       setNotionError('Failed to create Notion page');
       setStage('tasks');
     }
