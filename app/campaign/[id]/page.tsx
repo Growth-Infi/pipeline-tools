@@ -27,7 +27,7 @@ interface Campaign {
   meeting_link: string;
   status: "running" | "paused" | "completed" | "pending" | "draft";
   created_at: string;
-  recipients?: { count: number }[]; // ✅ NEW
+  recipients?: { count: number }[];
 }
 
 interface Recipient {
@@ -66,7 +66,7 @@ export default function CampaignDetailPage() {
   const { user, loading: authLoading } = useAuth();
 
   const [campaign, setCampaign] = useState<Campaign | null>(null);
-  const [recipients, setRecipients] = useState<Recipient[]>([]); // ✅ NEW
+  const [recipients, setRecipients] = useState<Recipient[]>([]); //  NEW
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -85,7 +85,7 @@ export default function CampaignDetailPage() {
 
     const fetchCampaign = async () => {
       try {
-        // ✅ FIXED: direct campaign fetch
+        //  FIXED: direct campaign fetch
         const res = await fetch(
           `${API_BASE}/campaign/${id}?user_id=${CURRENT_USER_ID}`,
         );
@@ -179,7 +179,6 @@ export default function CampaignDetailPage() {
     });
   };
 
-  // ❌ old total_recipients removed
   const totalRecipients = campaign?.recipients?.[0]?.count || 0;
 
   const status = campaign
@@ -294,7 +293,7 @@ export default function CampaignDetailPage() {
                 </a>
               </div>
 
-              {/* ✅ FIXED recipients */}
+              {/* FIXED recipients */}
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
                   <Users className="w-3 h-3" />
@@ -316,7 +315,7 @@ export default function CampaignDetailPage() {
               </div>
             </div>
 
-            {/* ✅ OPTIONAL recipients list */}
+            {/*  recipients list */}
             <div className="mt-6">
               <h2 className="text-xs text-zinc-500 mb-2">Recipients</h2>
               <div className="space-y-2">

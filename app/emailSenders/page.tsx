@@ -38,6 +38,9 @@ export default function EmailSendersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [limitMap, setLimitMap] = useState<Record<string, number>>({});
 
   const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
 
@@ -121,6 +124,47 @@ export default function EmailSendersPage() {
   //     </div>
   // );
 
+  const handleUpdateDailyLimit = async (senderId: string) => {
+    const limit = limitMap[senderId];
+
+    if (limit < 1 || limit > 60) {
+      alert("Limit must be between 1 and 60");
+      return;
+    }
+
+    setUpdatingId(senderId);
+
+    try {
+      const res = await fetch(`${API_BASE}/gmail/${senderId}/limit`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          daily_limit: limit,
+          user_id: CURRENT_USER_ID,
+        }),
+      });
+
+      if (!res.ok) throw new Error();
+
+      //  update UI
+      setSenders((prev) =>
+        prev.map((s) => (s.id === senderId ? { ...s, daily_limit: limit } : s)),
+      );
+
+      //  CLEANUP
+      setLimitMap((prev) => {
+        const copy = { ...prev };
+        delete copy[senderId];
+        return copy;
+      });
+
+      setEditingId(null);
+    } catch {
+      alert("Failed to update limit");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
   return (
     <div className="h-screen bg-[#050505] text-white flex overflow-hidden">
       <Sidebar />
@@ -206,17 +250,82 @@ export default function EmailSendersPage() {
 
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between text-[10px] text-zinc-500">
-                          <div className="flex items-center gap-1">
+                          {/* LEFT SIDE */}
+                          <div className="flex items-center gap-2">
                             <Send className="w-3 h-3" />
                             <span>Daily usage</span>
+
+                            {editingId === sender.id ? (
+                              <div className="flex items-center gap-1">
+                                <input
+                                  type="number"
+                                  value={
+                                    limitMap[sender.id] ?? sender.daily_limit
+                                  }
+                                  min={1}
+                                  max={60}
+                                  step={1}
+                                  onChange={(e) => {
+                                    const val = Number(e.target.value);
+
+                                    setLimitMap((prev) => ({
+                                      ...prev,
+                                      [sender.id]: val,
+                                    }));
+                                  }}
+                                  className="w-16 px-1 py-0.5 bg-zinc-900 border border-zinc-700 rounded text-[10px] focus:outline-none"
+                                  autoFocus
+                                />
+
+                                <button
+                                  onClick={() =>
+                                    handleUpdateDailyLimit(sender.id)
+                                  }
+                                  disabled={updatingId === sender.id}
+                                  className="text-[9px] px-2 py-0.5 bg-blue-600 rounded hover:bg-blue-500 disabled:opacity-50"
+                                >
+                                  {updatingId === sender.id ? "..." : "Save"}
+                                </button>
+
+                                <button
+                                  onClick={() => setEditingId(null)}
+                                  className="text-[9px] text-zinc-400 hover:text-white"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => {
+                                  setEditingId(sender.id);
+                                  setLimitMap((prev) => ({
+                                    ...prev,
+                                    [sender.id]: sender.daily_limit,
+                                  }));
+                                }}
+                                className="text-[9px] text-blue-400 hover:text-blue-300"
+                              >
+                                Edit
+                              </button>
+                            )}
                           </div>
+
+                          {/* RIGHT SIDE */}
                           <span className="font-mono">
                             {sender.sent_today} / {sender.daily_limit}
                           </span>
                         </div>
+
+                        {/* PROGRESS BAR */}
                         <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
                           <motion.div
-                            className={`h-full rounded-full ${pct > 80 ? "bg-red-500" : pct > 50 ? "bg-yellow-500" : "bg-emerald-500"}`}
+                            className={`h-full rounded-full ${
+                              pct > 80
+                                ? "bg-red-500"
+                                : pct > 50
+                                  ? "bg-yellow-500"
+                                  : "bg-emerald-500"
+                            }`}
                             initial={{ width: 0 }}
                             animate={{ width: `${pct}%` }}
                             transition={{ duration: 0.6, ease: "easeOut" }}
