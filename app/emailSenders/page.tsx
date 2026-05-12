@@ -13,7 +13,9 @@ import {
   Clock,
   Send,
   RefreshCw,
+  Trash2,
 } from "lucide-react";
+
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
@@ -33,7 +35,7 @@ interface EmailSender {
 
 export default function EmailSendersPage() {
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
+  const { user, session, loading: authLoading } = useAuth();
   const [senders, setSenders] = useState<EmailSender[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -41,8 +43,14 @@ export default function EmailSendersPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [limitMap, setLimitMap] = useState<Record<string, number>>({});
+  const [disconnectingId, setDisconnectingId] = useState<string | null>(null);
 
+  // const CURRENT_USER_ID = user?.id;
+  // const token = session?.access_token;
   const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
+  const token =
+    session?.access_token ||
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc4NTY1OTczLCJpYXQiOjE3Nzg1NjIzNzMsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzc4NTA1MDIxfV0sInNlc3Npb25faWQiOiI2ZDk2MGIzOS1lMzI3LTRjNWYtOWMwMC02MGFiZGM4NmU5Y2EiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.ZQNPkK4ZXjaldFQZJZlLVjz1yhFiSqYcraemw9m2mDuvphbdj2SBX77i64H6Abrs3kuqYXOGjTq8oU1kLvN2RQ";
 
   // useEffect(() => {
   //     if (!authLoading && !user) router.push("/");
@@ -53,9 +61,11 @@ export default function EmailSendersPage() {
     const fetchSenders = async () => {
       try {
         //get sender mails
-        const res = await fetch(
-          `${API_BASE}/gmail/accounts?user_id=${CURRENT_USER_ID}`,
-        );
+        const res = await fetch(`${API_BASE}/gmail/accounts`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const data = await res.json();
         setSenders(data);
       } catch {
@@ -84,7 +94,10 @@ export default function EmailSendersPage() {
       //update status of email
       const res = await fetch(`${API_BASE}/gmail/${sender.id}/status`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ status: newStatus, user_id: CURRENT_USER_ID }),
       });
       if (!res.ok) throw new Error();
@@ -99,9 +112,54 @@ export default function EmailSendersPage() {
       setTogglingId(null);
     }
   };
+  const handleDisconnect = async (senderId: string) => {
+    const previousSenders = senders;
+    //optimistic remove
+    setSenders((prev) => prev.filter((s) => s.id !== senderId));
+    setDisconnectingId(senderId);
 
+    try {
+      const res = await fetch(`${API_BASE}/gmail/${senderId}/disconnect`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) {
+        throw new Error("Failed to disconnect");
+      }
+    } catch (err) {
+      console.error(err);
+
+      // rollback
+      setSenders(previousSenders);
+
+      alert("Failed to disconnect Gmail account");
+    } finally {
+      setDisconnectingId(null);
+    }
+  };
   const handleAddSender = async () => {
-    window.location.href = `${API_BASE}/gmail/connect?user_id=${CURRENT_USER_ID}`;
+    try {
+      const res = await fetch(`${API_BASE}/gmail/connect`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Unauthorized");
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      console.error("Failed to connect:", err);
+      setError("Could not initialize Gmail connection. Please try again.");
+    }
+    // window.location.href = `${API_BASE}/gmail/connect`;
   };
 
   const formatDate = (iso: string | null) => {
@@ -137,7 +195,10 @@ export default function EmailSendersPage() {
     try {
       const res = await fetch(`${API_BASE}/gmail/${senderId}/limit`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           daily_limit: limit,
           user_id: CURRENT_USER_ID,
@@ -315,7 +376,23 @@ export default function EmailSendersPage() {
                             {sender.sent_today} / {sender.daily_limit}
                           </span>
                         </div>
-
+                        <div className="flex justify-end mt-2">
+                          <button
+                            onClick={() => handleDisconnect(sender.id)}
+                            disabled={disconnectingId === sender.id}
+                            title="Disconnect Sender"
+                            className="flex items-center gap-1 text-[10px] text-red-400 hover:text-red-300 disabled:opacity-50 transition-colors"
+                          >
+                            {disconnectingId === sender.id ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <>
+                                <Trash2 className="w-3.5 h-3.5" />
+                                {/* <span>Disconnect</span> */}
+                              </>
+                            )}
+                          </button>
+                        </div>
                         {/* PROGRESS BAR */}
                         <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
                           <motion.div
@@ -347,6 +424,13 @@ export default function EmailSendersPage() {
                       <button
                         onClick={() => handleToggle(sender)}
                         disabled={togglingId === sender.id}
+                        title={
+                          sender.status === "active"
+                            ? "Pause account"
+                            : sender.status === "paused"
+                              ? "Activate account"
+                              : "Reconnect Gmail"
+                        }
                         className="shrink-0 text-zinc-400 hover:text-white transition-colors disabled:opacity-40"
                       >
                         {togglingId === sender.id ? (

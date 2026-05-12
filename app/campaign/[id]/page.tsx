@@ -36,6 +36,7 @@ interface Recipient {
   status: string;
   error?: string;
   sent_at?: string;
+  sender_email: string;
 }
 
 const statusConfig: Record<string, { label: string; classes: string }> = {
@@ -63,7 +64,7 @@ const statusConfig: Record<string, { label: string; classes: string }> = {
 export default function CampaignDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, session } = useAuth();
 
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [recipients, setRecipients] = useState<Recipient[]>([]); //  NEW
@@ -73,7 +74,12 @@ export default function CampaignDetailPage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [actionError, setActionError] = useState("");
 
+  // const CURRENT_USER_ID = user?.id;
+  // const token = session?.access_token;
   const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
+  const token =
+    session?.access_token ||
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc4NTY1OTczLCJpYXQiOjE3Nzg1NjIzNzMsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzc4NTA1MDIxfV0sInNlc3Npb25faWQiOiI2ZDk2MGIzOS1lMzI3LTRjNWYtOWMwMC02MGFiZGM4NmU5Y2EiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.ZQNPkK4ZXjaldFQZJZlLVjz1yhFiSqYcraemw9m2mDuvphbdj2SBX77i64H6Abrs3kuqYXOGjTq8oU1kLvN2RQ";
 
   // useEffect(() => {
   //     if (!authLoading && !user) router.push("/");
@@ -86,9 +92,11 @@ export default function CampaignDetailPage() {
     const fetchCampaign = async () => {
       try {
         //  FIXED: direct campaign fetch
-        const res = await fetch(
-          `${API_BASE}/campaign/${id}?user_id=${CURRENT_USER_ID}`,
-        );
+        const res = await fetch(`${API_BASE}/campaign/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const data: Campaign = await res.json();
 
         if (!data) throw new Error("Not found");
@@ -99,16 +107,16 @@ export default function CampaignDetailPage() {
         //  NEW: fetch recipients
         const resRecipients = await fetch(
           `${API_BASE}/campaign/${id}/recipients`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
         );
         const recipientsData: Recipient[] = await resRecipients.json();
 
         console.log("RECIPIENTS:", recipientsData);
         setRecipients(recipientsData);
-
-        // const res = await fetch(`${API_BASE}/${id}`);
-        // const data = await res.json();
-        // if (!data) throw new Error("Not found");
-        // setCampaign(data);
       } catch (err) {
         console.log(err);
         setError("Failed to load campaign");
@@ -125,6 +133,21 @@ export default function CampaignDetailPage() {
   //         <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
   //     </div>
   // );
+
+  const groupedRecipients = recipients.reduce(
+    (acc, recipient) => {
+      const sender = recipient.sender_email || "Not Assigned";
+
+      if (!acc[sender]) {
+        acc[sender] = [];
+      }
+
+      acc[sender].push(recipient);
+
+      return acc;
+    },
+    {} as Record<string, Recipient[]>,
+  );
 
   const handleAction = async (action: "start" | "pause" | "resume") => {
     if (!campaign) return;
@@ -147,7 +170,10 @@ export default function CampaignDetailPage() {
     try {
       const res = await fetch(`${API_BASE}/campaign/${campaign.id}/${action}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body:
           action === "start"
             ? JSON.stringify({ user_id: campaign.user_id })
@@ -317,17 +343,52 @@ export default function CampaignDetailPage() {
 
             {/*  recipients list */}
             <div className="mt-6">
-              <h2 className="text-xs text-zinc-500 mb-2">Recipients</h2>
-              <div className="space-y-2">
-                {recipients.map((r) => (
-                  <div
-                    key={r.id}
-                    className="text-xs bg-zinc-900 p-2 rounded flex justify-between"
-                  >
-                    <span>{r.email}</span>
-                    <span className="text-zinc-500">{r.status}</span>
-                  </div>
-                ))}
+              <h2 className="text-xs text-zinc-500 mb-4 uppercase tracking-wider">
+                Recipients by Sender
+              </h2>
+              {/* Recipient Header */}
+              <div className="grid grid-cols-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500 px-4 py-2 border-b border-white/5">
+                <span>Email</span>
+                <span>Status</span>
+              </div>
+              <div className="space-y-6">
+                {Object.entries(groupedRecipients).map(
+                  ([senderEmail, senderRecipients]) => (
+                    <div
+                      key={senderEmail}
+                      className="border border-white/5 rounded-2xl overflow-hidden"
+                    >
+                      {/* Sender Header */}
+                      <div className="bg-zinc-900/80 px-4 py-3 border-b border-white/5 flex items-center justify-between">
+                        <div>
+                          <p className="text-xs font-semibold text-[#b8a98a]">
+                            {senderEmail}
+                          </p>
+
+                          <p className="text-[10px] text-zinc-500 mt-1">
+                            {senderRecipients.length} recipients assigned
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Recipients */}
+                      <div className="divide-y divide-white/5">
+                        {senderRecipients.map((r) => (
+                          <div
+                            key={r.id}
+                            className="grid grid-cols-2 px-4 py-3 text-xs"
+                          >
+                            <span className="text-zinc-200">{r.email}</span>
+
+                            <span className="text-zinc-500 capitalize">
+                              {r.status}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ),
+                )}
               </div>
             </div>
           </motion.div>
