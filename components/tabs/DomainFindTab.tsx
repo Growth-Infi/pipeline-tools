@@ -20,6 +20,15 @@ export default function DomainFindTab() {
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
 
+  const [contextCol, setContextCol] = useState("");
+
+  const detectContextColumn = (cols: string[]) => {
+    const keywords = ["context", "contextual", "description"];
+    return (
+      cols.find((col) => keywords.some((k) => col.toLowerCase().includes(k))) ||
+      ""
+    );
+  };
   const detectCompanyColumn = (cols: string[]) => {
     const keywords = ["company", "organization", "org"];
     return (
@@ -29,13 +38,18 @@ export default function DomainFindTab() {
   };
 
   useEffect(() => {
-    if (!companyCol && columns.length) {
-      const detected = detectCompanyColumn(columns);
-      if (detected) {
-        setCompanyCol(detected);
+    if (columns.length) {
+      if (!companyCol) {
+        const detectedCompany = detectCompanyColumn(columns);
+        if (detectedCompany) setCompanyCol(detectedCompany);
+      }
+      // NEW: Detect context column
+      if (!contextCol) {
+        const detectedContext = detectContextColumn(columns);
+        if (detectedContext) setContextCol(detectedContext);
       }
     }
-  }, [columns]);
+  }, [columns, companyCol, contextCol]);
 
   const handleFindDomains = async () => {
     if (!companyCol || !csvData.length) return;
@@ -56,7 +70,7 @@ export default function DomainFindTab() {
     let stopped = false;
 
     const processBatch = async (startIdx: number) => {
-      const batch: string[] = [];
+      const batch: any[] = [];
       const indices: number[] = [];
 
       for (
@@ -65,9 +79,11 @@ export default function DomainFindTab() {
         i++
       ) {
         const company = String(newData[i][companyCol] || "").trim();
-
+        const context = contextCol
+          ? String(newData[i][contextCol] || "").trim()
+          : "";
         if (company) {
-          batch.push(company);
+          batch.push({ company, context });
           indices.push(i);
         } else {
           newData[i] = { ...newData[i], domain: "" };
@@ -122,7 +138,7 @@ export default function DomainFindTab() {
     }
 
     for (let i = 0; i < batchStarts.length; i += CONCURRENCY) {
-      //  NEW: stop further batches
+      //   stop further batches
       if (stopped) {
         console.warn("Stopped early from backend");
         break;
@@ -167,25 +183,51 @@ export default function DomainFindTab() {
           </div>
         </div>
 
-        <select
-          value={companyCol}
-          onChange={(e) => setCompanyCol(e.target.value)}
-          disabled={isLoading}
-          className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-xs text-white"
-        >
-          <option value="">Select company column...</option>
-          {columns.map((col) => (
-            <option key={col} value={col}>
-              {col}
-            </option>
-          ))}
-        </select>
+        {/* --- COMPANY COLUMN SELECT --- */}
+        <div className="space-y-1">
+          <label className="text-[10px] text-zinc-500 ml-1">
+            Company Name Column
+          </label>
+          <select
+            value={companyCol}
+            onChange={(e) => setCompanyCol(e.target.value)}
+            disabled={isLoading}
+            className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500/50 transition-colors"
+          >
+            <option value="">Select company column...</option>
+            {columns.map((col) => (
+              <option key={col} value={col}>
+                {col}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* --- CONTEXT COLUMN SELECT (NEW) --- */}
+        <div className="space-y-1">
+          <label className="text-[10px] text-zinc-500 ml-1">
+            Context Column (Optional)
+          </label>
+          <select
+            value={contextCol}
+            onChange={(e) => setContextCol(e.target.value)}
+            disabled={isLoading}
+            className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500/50 transition-colors"
+          >
+            <option value="">No context...</option>
+            {columns.map((col) => (
+              <option key={col} value={col}>
+                {col}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {isLoading && (
-          <div className="space-y-1">
+          <div className="space-y-1 pt-1">
             <div className="flex justify-between text-[10px]">
-              <span>Processing...</span>
-              <span>
+              <span className="text-zinc-400">Processing...</span>
+              <span className="text-zinc-400">
                 {progress.done} / {progress.total}
               </span>
             </div>
@@ -193,6 +235,7 @@ export default function DomainFindTab() {
             <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-indigo-500"
+                initial={{ width: 0 }}
                 animate={{
                   width: `${(progress.done / progress.total) * 100}%`,
                 }}
@@ -204,7 +247,7 @@ export default function DomainFindTab() {
         <button
           onClick={handleFindDomains}
           disabled={!companyCol || isLoading}
-          className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 disabled:bg-zinc-800 disabled:text-zinc-600 text-black font-bold text-[10px] uppercase rounded-lg"
+          className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 disabled:bg-zinc-800 disabled:text-zinc-600 text-black font-bold text-[10px] uppercase rounded-lg transition-colors"
         >
           <Play className="inline w-3 h-3 mr-1" />
           {isLoading ? "Finding..." : "Run Domain Finder"}
@@ -212,7 +255,7 @@ export default function DomainFindTab() {
 
         {successMsg && (
           <div
-            className={`text-[10px] font-medium text-center ${
+            className={`text-[10px] font-medium text-center p-1 rounded bg-white/5 ${
               stoppedEarly ? "text-yellow-500" : "text-green-500"
             }`}
           >

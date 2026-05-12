@@ -1,64 +1,74 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
-
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { User, Session } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
 
 interface AuthContextType {
-    user: User | null,
-    loading: boolean,
-    signInWithGoogle: () => Promise<void>,
-    signOut: () => Promise<void>
+  user: User | null;
+  session: Session | null;
+  loading: boolean;
+  signInWithGoogle: () => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = (props: { children: React.ReactNode }) => {
-    const children = props.children
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
+  const children = props.children;
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        let mounted = true;
+  useEffect(() => {
+    let mounted = true;
 
-        supabase.auth.getSession().then((response) => {
-            if (!mounted) return;
-            const session = response.data.session;
-            setUser(session?.user ?? null);
-            setLoading(false);
-        });
+    supabase.auth.getSession().then((response) => {
+      if (!mounted) return;
 
-        const authListener = supabase.auth.onAuthStateChange((_event, session) => {
-            if (!mounted) return;
-            setUser(session?.user ?? null);
-            setLoading(false);
-        });
+      const session = response.data.session;
 
-        return () => {
-            mounted = false;
-            authListener.data.subscription.unsubscribe();
-        };
-    }, []);
+      setSession(session);
+      setUser(session?.user ?? null);
 
-    const signInWithGoogle = async () => {
-        await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: `${window.location.origin}/workspace`
-            }
-        });
+      setLoading(false);
+    });
+
+    const authListener = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+
+      setSession(session);
+      setUser(session?.user ?? null);
+
+      setLoading(false);
+    });
+
+    return () => {
+      mounted = false;
+      authListener.data.subscription.unsubscribe();
     };
+  }, []);
 
-    const signOut = async () => {
-        await supabase.auth.signOut();
-    };
+  const signInWithGoogle = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/workspace`,
+      },
+    });
+  };
 
-    return (
-        <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut }}>
-            {children}
-        </AuthContext.Provider>
-    );
-}
+  const signOut = async () => {
+    await supabase.auth.signOut();
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{ user, session, loading, signInWithGoogle, signOut }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
 
 export const useAuth = () => useContext(AuthContext);

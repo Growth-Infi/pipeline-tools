@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Database,
   ShieldCheck,
@@ -9,6 +9,7 @@ import {
   Sparkles,
   Mail,
   Globe,
+  CalendarPlus,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import EnrichmentTab from "./tabs/EnrichmentTab";
@@ -18,7 +19,7 @@ import DomainFindTab from "./tabs/DomainFindTab";
 import EmailVerifyTab from "./tabs/EmailVerifier";
 import MeetingTaskTab from "./tabs/MeetingTasksTab";
 import EmailInvitesTab from "./tabs/EmailInvitesTab";
-
+import { useSearchParams } from "next/navigation";
 type ToolId =
   | "data"
   | "clean"
@@ -66,7 +67,7 @@ const TOOLS: Tool[] = [
   {
     id: "emailInvites",
     label: "Email Invites",
-    icon: Eraser,
+    icon: CalendarPlus,
     color: "text-amber-400",
   },
   // { id: 'verify', label: 'Verifier', icon: ShieldCheck, color: 'text-emerald-400' },
