@@ -37,7 +37,7 @@ export const Sidebar = () => {
         {/* EMAIL INVITES */}
         <button
           onClick={() => router.push("/campaign")}
-          className={`w-full p-3 rounded-xl transition-all flex justify-center group relative ${pathname === "/emailInvites" ? "bg-white/10 text-white" : "text-zinc-500 hover:text-white hover:bg-white/5"}`}
+          className={`w-full p-3 rounded-xl transition-all flex justify-center group relative ${pathname === "/campaign" ? "bg-white/10 text-white" : "text-zinc-500 hover:text-white hover:bg-white/5"}`}
           title="Calendar Invitation Campaigns"
         >
           <Send className="w-5 h-5" />
