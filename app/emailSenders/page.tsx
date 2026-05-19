@@ -50,11 +50,11 @@ export default function EmailSendersPage() {
   const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
   const token =
     session?.access_token ||
-    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc5MjA0MTYxLCJpYXQiOjE3NzkyMDA1NjEsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzc4NTA1MDIxfV0sInNlc3Npb25faWQiOiI2ZDk2MGIzOS1lMzI3LTRjNWYtOWMwMC02MGFiZGM4NmU5Y2EiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.DwYxF8U-R9TGMMamNQjdF1N35M4_AppIEAVuUh8yHsJqiu5-CEzdUhBi0_FtcVerAOsgI3Qrc-XtZPBrE2WZAw";
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc5MjExNTc5LCJpYXQiOjE3NzkyMDc5NzksImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzc5MjAxNjM4fV0sInNlc3Npb25faWQiOiJkMWViMWViOC1mMzM3LTQ5ZjUtYTM0NS05OTYzMjdiODlmZjUiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.pKdWDNVpPklJAfWYme4IAx0U333ZXmKKlXEiGJUUqc8XeN4WncVadzOJa_uNXqJ9Fw1ducN1ofStGL5Ev-Iykw";
 
-  useEffect(() => {
-    if (!authLoading && !user) router.push("/");
-  }, [user, authLoading]);
+  // useEffect(() => {
+  //     if (!authLoading && !user) router.push("/");
+  // }, [user, authLoading]);
 
   useEffect(() => {
     if (authLoading || !CURRENT_USER_ID) return;
@@ -69,7 +69,7 @@ export default function EmailSendersPage() {
         const data = await res.json();
         setSenders(data);
       } catch {
-        setError("Failed to load email senders");
+        setError("Failed to load sender accounts");
       } finally {
         setLoading(false);
       }
@@ -234,7 +234,7 @@ export default function EmailSendersPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-sm font-bold text-white uppercase tracking-wider">
-              Email Senders
+              Sender Accounts
             </h1>
             <p className="text-[10px] text-zinc-500 mt-0.5">
               Manage Gmail accounts used for outreach
@@ -245,7 +245,7 @@ export default function EmailSendersPage() {
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 transition-all text-xs font-bold text-white"
           >
             <Plus className="w-3.5 h-3.5" />
-            Add Gmail Account
+            Add Sender Account
           </button>
         </div>
 
@@ -259,12 +259,12 @@ export default function EmailSendersPage() {
         {!error && senders.length === 0 && (
           <div className="flex flex-col items-center justify-center h-64 gap-3 text-zinc-600">
             <Mail className="w-8 h-8 opacity-30" />
-            <p className="text-xs">No email senders added yet</p>
+            <p className="text-xs">No senders accounts added yet</p>
             <button
               onClick={handleAddSender}
               className="text-[10px] text-blue-400 hover:text-blue-300 transition-colors"
             >
-              + Add your first Gmail account
+              + Add your first Sender account
             </button>
           </div>
         )}

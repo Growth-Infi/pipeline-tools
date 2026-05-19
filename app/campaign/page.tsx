@@ -836,7 +836,7 @@ export default function EmailInvitesPage() {
               className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition-all text-xs font-bold text-zinc-300"
             >
               <Mail className="w-3.5 h-3.5" />
-              <span className="whitespace-nowrap">Email Senders</span>
+              <span className="whitespace-nowrap">Sender Accounts</span>
             </button>
           </div>
         </div>
