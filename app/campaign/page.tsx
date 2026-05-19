@@ -64,7 +64,6 @@ const formatToDateTimeLocal = (date: Date) => {
 
 const formatDate = (iso: string | null, timezone?: string) => {
   if (!iso) return "Never";
-
   return formatInTimeZone(new Date(iso), timezone || "UTC", "MMM d, h:mm a");
 };
 
@@ -83,7 +82,7 @@ function CreateCampaignModal({
   const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
   const token =
     session?.access_token ||
-    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc5MTk4MDg3LCJpYXQiOjE3NzkxOTQ0ODcsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzc4NTA1MDIxfV0sInNlc3Npb25faWQiOiI2ZDk2MGIzOS1lMzI3LTRjNWYtOWMwMC02MGFiZGM4NmU5Y2EiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.iMCN5b2mHckycV5dKRp2Ybcgx9p1gNTAVd42Xb-BLJ2p_NqEvTmJkJrcaQKeMRdwOcnOQVhAoletqNTeuv9hpg";
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc5MjA0MTYxLCJpYXQiOjE3NzkyMDA1NjEsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzc4NTA1MDIxfV0sInNlc3Npb25faWQiOiI2ZDk2MGIzOS1lMzI3LTRjNWYtOWMwMC02MGFiZGM4NmU5Y2EiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.DwYxF8U-R9TGMMamNQjdF1N35M4_AppIEAVuUh8yHsJqiu5-CEzdUhBi0_FtcVerAOsgI3Qrc-XtZPBrE2WZAw";
 
   const initStart = prefillDate
     ? formatToDateTimeLocal(prefillDate)
@@ -194,15 +193,15 @@ function CreateCampaignModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-md">
       <motion.div
         initial={{ scale: 0.95, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.95, opacity: 0, y: 20 }}
-        className="w-full max-w-lg bg-[#09090b] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="w-full max-w-lg bg-[#09090b] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh]"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-white/5 bg-[#0a0a0a]">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-white/5 bg-[#0a0a0a]">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
               <Megaphone className="w-5 h-5" />
@@ -227,14 +226,14 @@ function CreateCampaignModal({
         </div>
 
         {/* Body */}
-        <div className="p-6 space-y-5 overflow-y-auto">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto">
           {success ? (
             <div className="flex items-center justify-center py-12 text-emerald-400 text-sm font-medium">
               ✓ Campaign created successfully!
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-1">
                     <Megaphone className="w-3 h-3" /> Campaign Name
@@ -274,7 +273,7 @@ function CreateCampaignModal({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold text-zinc-500 uppercase">
                     Meet Link
@@ -308,7 +307,7 @@ function CreateCampaignModal({
 
               <hr className="border-white/5" />
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-1">
                     <Clock className="w-3 h-3" /> Start Time
@@ -410,17 +409,17 @@ function CreateCampaignModal({
         </div>
 
         {!success && (
-          <div className="p-5 border-t border-white/5 bg-[#0a0a0a] flex justify-end gap-3">
+          <div className="p-4 sm:p-5 border-t border-white/5 bg-[#0a0a0a] flex justify-end gap-3">
             <button
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all"
+              className="px-4 sm:px-5 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition-all"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
               disabled={!canSubmit}
-              className="px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 disabled:bg-zinc-800 disabled:text-zinc-600 transition-all flex items-center gap-2"
+              className="px-5 sm:px-6 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 disabled:bg-zinc-800 disabled:text-zinc-600 transition-all flex items-center gap-2"
             >
               {loading ? (
                 <>
@@ -464,15 +463,12 @@ function CalendarView({
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  // Convert naive local time in campaign's tz → UTC → user's local tz for display
   const formatCampaignTime = (iso?: string, campaignTz?: string) => {
     if (!iso) return "";
     const utcDate = fromZonedTime(iso, campaignTz || "UTC");
-    // return formatInTimeZone(utcDate, userTz, "h:mm a");
     return formatInTimeZone(utcDate, userTz, "HH:mm");
   };
 
-  // Group campaigns by date IN THE USER'S LOCAL TIMEZONE
   const campaignsByDate: Record<string, Campaign[]> = {};
   campaigns.forEach((c) => {
     const raw = c.start_time || c.created_at;
@@ -494,11 +490,18 @@ function CalendarView({
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
 
-  // Pad to complete last row
   while (cells.length % 7 !== 0) cells.push(null);
 
   const prevMonth = () => setViewDate(new Date(year, month - 1, 1));
   const nextMonth = () => setViewDate(new Date(year, month + 1, 1));
+
+  // Build a plain flat list of active days specifically for the mobile viewport stack display
+  const activeDaysList = Object.keys(campaignsByDate)
+    .filter((key) => {
+      const [cYear, cMonth] = key.split("-").map(Number);
+      return cYear === year && cMonth === month + 1;
+    })
+    .sort((a, b) => Number(a.split("-")[2]) - Number(b.split("-")[2]));
 
   return (
     <div className="flex flex-col h-full">
@@ -521,114 +524,156 @@ function CalendarView({
         </button>
       </div>
 
-      {/* Day labels */}
-      <div className="grid grid-cols-7 mb-2">
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
-          <div
-            key={d}
-            className="text-center text-[9px] font-bold text-zinc-600 uppercase tracking-widest py-1"
-          >
-            {d}
-          </div>
-        ))}
-      </div>
-
-      {/* Day cells */}
-      <div className="grid grid-cols-7 gap-1 flex-1">
-        {cells.map((day, idx) => {
-          if (day === null) {
-            return <div key={`empty-${idx}`} />;
-          }
-
-          const key = `${year}-${month + 1}-${day}`;
-          const dayCampaigns = campaignsByDate[key] || [];
-          const isToday =
-            today.getFullYear() === year &&
-            today.getMonth() === month &&
-            today.getDate() === day;
-          const isPast =
-            new Date(year, month, day) <
-            new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-          return (
+      {/* DESKTOP CALENDAR GRID SYSTEM */}
+      <div className="hidden md:flex flex-col flex-1">
+        <div className="grid grid-cols-7 mb-2">
+          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
             <div
-              key={key}
-              onClick={() => {
-                if (dayCampaigns.length === 0) {
-                  const clickedDate = new Date(year, month, day, 10, 0); // default 10 AM
-                  onDayClick(clickedDate);
-                }
-              }}
-              className={`relative min-h-[72px] rounded-xl border p-1.5 text-left transition-all group flex flex-col
-                ${
-                  isToday
-                    ? "border-rose-500/40 bg-rose-500/5"
-                    : dayCampaigns.length > 0
-                      ? "border-white/10 bg-white/[0.02] cursor-default"
-                      : isPast
-                        ? "border-white/[0.03] bg-transparent opacity-40 cursor-default"
-                        : "border-white/5 bg-white/[0.01] hover:border-white/20 hover:bg-white/5 cursor-pointer"
-                }`}
+              key={d}
+              className="text-center text-[9px] font-bold text-zinc-600 uppercase tracking-widest py-1"
             >
-              {/* Date number */}
-              <span
-                className={`text-[10px] font-bold mb-1 ${isToday ? "text-rose-400" : "text-zinc-500"}`}
+              {d}
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 gap-1 flex-1">
+          {cells.map((day, idx) => {
+            if (day === null) {
+              return <div key={`empty-${idx}`} />;
+            }
+
+            const key = `${year}-${month + 1}-${day}`;
+            const dayCampaigns = campaignsByDate[key] || [];
+            const isToday =
+              today.getFullYear() === year &&
+              today.getMonth() === month &&
+              today.getDate() === day;
+            const isPast =
+              new Date(year, month, day) <
+              new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+            return (
+              <div
+                key={key}
+                onClick={() => {
+                  if (dayCampaigns.length === 0) {
+                    const clickedDate = new Date(year, month, day, 10, 0);
+                    onDayClick(clickedDate);
+                  }
+                }}
+                className={`relative min-h-[72px] rounded-xl border p-1.5 text-left transition-all group flex flex-col
+                  ${
+                    isToday
+                      ? "border-rose-500/40 bg-rose-500/5"
+                      : dayCampaigns.length > 0
+                        ? "border-white/10 bg-white/[0.02] cursor-default"
+                        : isPast
+                          ? "border-white/[0.03] bg-transparent opacity-40 cursor-default"
+                          : "border-white/5 bg-white/[0.01] hover:border-white/20 hover:bg-white/5 cursor-pointer"
+                  }`}
               >
-                {day}
-              </span>
+                <span
+                  className={`text-[10px] font-bold mb-1 ${isToday ? "text-rose-400" : "text-zinc-500"}`}
+                >
+                  {day}
+                </span>
 
-              {/* Campaign chips */}
-              <div className="flex flex-col gap-0.5 flex-1 overflow-hidden">
-                {dayCampaigns.slice(0, 2).map((c) => (
-                  <button
-                    key={c.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onCampaignClick(c.id);
-                    }}
-                    className={`w-full text-left px-1.5 py-0.5 rounded text-[8px] font-semibold truncate flex items-center gap-1 transition-all hover:brightness-125
-                      ${statusColors[c.status] || statusColors.pending}`}
-                  >
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusDotColors[c.status] || "bg-blue-400"}`}
-                    />
-                    <div className="flex flex-col min-w-0">
-                      <span className="text-[7px] opacity-70 leading-none">
-                        {formatCampaignTime(c.start_time, c.timezone)}
-                      </span>
+                <div className="flex flex-col gap-0.5 flex-1 overflow-hidden">
+                  {dayCampaigns.slice(0, 2).map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onCampaignClick(c.id);
+                      }}
+                      className={`w-full text-left px-1.5 py-0.5 rounded text-[8px] font-semibold truncate flex items-center gap-1 transition-all hover:brightness-125
+                        ${statusColors[c.status] || statusColors.pending}`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusDotColors[c.status] || "bg-blue-400"}`}
+                      />
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-[7px] opacity-70 leading-none">
+                          {formatCampaignTime(c.start_time, c.timezone)}
+                        </span>
+                        <span className="truncate leading-none mt-0.5">
+                          {c.name}
+                        </span>
+                      </div>
+                    </button>
+                  ))}
+                  {dayCampaigns.length > 2 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPopover({ key, campaigns: dayCampaigns });
+                      }}
+                      className="w-full text-left px-1.5 py-0.5 rounded text-[8px] font-bold text-zinc-400 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/15 transition-all"
+                    >
+                      +{dayCampaigns.length - 2} more
+                    </button>
+                  )}
+                </div>
 
-                      <span className="truncate leading-none mt-0.5">
-                        {c.name}
-                      </span>
-                    </div>
-                  </button>
-                ))}
-                {dayCampaigns.length > 2 && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPopover({ key, campaigns: dayCampaigns });
-                    }}
-                    className="w-full text-left px-1.5 py-0.5 rounded text-[8px] font-bold text-zinc-400 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/15 transition-all"
-                  >
-                    +{dayCampaigns.length - 2} more
-                  </button>
+                {dayCampaigns.length === 0 && !isPast && (
+                  <span className="absolute inset-0 flex items-center justify-center text-[8px] text-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-medium">
+                    + New
+                  </span>
                 )}
               </div>
-
-              {/* Hover hint for empty future days */}
-              {dayCampaigns.length === 0 && !isPast && (
-                <span className="absolute inset-0 flex items-center justify-center text-[8px] text-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none font-medium">
-                  + New
-                </span>
-              )}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
-      {/* Legend */}
-      <div className="flex items-center gap-4 mt-4 px-1 flex-wrap">
+      {/* MOBILE SCROLLABLE TIMELINE VIEW STACK */}
+      <div className="flex md:hidden flex-col gap-3 max-h-[450px] overflow-y-auto pr-1">
+        {activeDaysList.length === 0 ? (
+          <div className="text-center py-8 text-xs text-zinc-500">
+            No campaigns scheduled for this month
+          </div>
+        ) : (
+          activeDaysList.map((dateKey) => {
+            const dayNum = dateKey.split("-")[2];
+            const dayCampaigns = campaignsByDate[dateKey] || [];
+            return (
+              <div
+                key={dateKey}
+                className="bg-white/[0.02] border border-white/5 rounded-xl p-3 flex gap-3 items-start"
+              >
+                <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 font-bold rounded-lg text-xs w-8 h-8 flex items-center justify-center shrink-0">
+                  {dayNum}
+                </div>
+                <div className="flex-1 min-w-0 space-y-1.5">
+                  {dayCampaigns.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => onCampaignClick(c.id)}
+                      className={`w-full text-left px-2.5 py-2 rounded-lg text-xs font-medium flex items-center justify-between border transition-all ${statusColors[c.status] || statusColors.pending}`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full shrink-0 ${statusDotColors[c.status] || "bg-blue-400"}`}
+                        />
+                        <span className="truncate font-semibold text-white">
+                          {c.name}
+                        </span>
+                      </div>
+                      <span className="text-[10px] opacity-60 ml-2 shrink-0 font-mono">
+                        {formatCampaignTime(c.start_time, c.timezone)}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Legend layout adjustments */}
+      <div className="flex items-center gap-x-3 gap-y-1.5 mt-4 px-1 flex-wrap border-t border-white/5 pt-3">
         {Object.entries(statusDotColors).map(([status, dot]) => (
           <div key={status} className="flex items-center gap-1.5">
             <span className={`w-2 h-2 rounded-full ${dot}`} />
@@ -637,7 +682,7 @@ function CalendarView({
             </span>
           </div>
         ))}
-        <div className="flex items-center gap-1.5 ml-auto">
+        <div className="hidden sm:flex items-center gap-1.5 ml-auto">
           <span className="text-[9px] text-zinc-600">
             Click empty date to create campaign
           </span>
@@ -648,21 +693,18 @@ function CalendarView({
       <AnimatePresence>
         {popover && (
           <>
-            {/* Backdrop */}
             <div
-              className="fixed inset-0 z-40"
+              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
               onClick={() => setPopover(null)}
             />
-            {/* Panel */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 6 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 6 }}
               transition={{ duration: 0.12 }}
-              className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-hidden"
+              className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-sm bg-[#111] border border-white/10 rounded-2xl shadow-2xl overflow-hidden"
             >
-              {/* Header */}
-              <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-zinc-900/50">
                 <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
                   {popover.campaigns.length} campaigns
                 </span>
@@ -673,7 +715,6 @@ function CalendarView({
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
-              {/* Campaign list */}
               <div className="p-2 space-y-1 max-h-72 overflow-y-auto">
                 {popover.campaigns.map((c) => (
                   <button
@@ -710,7 +751,6 @@ function CalendarView({
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 type ViewMode = "list" | "calendar";
-
 export default function EmailInvitesPage() {
   const router = useRouter();
   const { user, session, loading: authLoading } = useAuth();
@@ -724,7 +764,7 @@ export default function EmailInvitesPage() {
   const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
   const token =
     session?.access_token ||
-    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc5MTk4MDg3LCJpYXQiOjE3NzkxOTQ0ODcsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzc4NTA1MDIxfV0sInNlc3Npb25faWQiOiI2ZDk2MGIzOS1lMzI3LTRjNWYtOWMwMC02MGFiZGM4NmU5Y2EiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.iMCN5b2mHckycV5dKRp2Ybcgx9p1gNTAVd42Xb-BLJ2p_NqEvTmJkJrcaQKeMRdwOcnOQVhAoletqNTeuv9hpg";
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc5MjA0MTYxLCJpYXQiOjE3NzkyMDA1NjEsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzc4NTA1MDIxfV0sInNlc3Npb25faWQiOiI2ZDk2MGIzOS1lMzI3LTRjNWYtOWMwMC02MGFiZGM4NmU5Y2EiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.DwYxF8U-R9TGMMamNQjdF1N35M4_AppIEAVuUh8yHsJqiu5-CEzdUhBi0_FtcVerAOsgI3Qrc-XtZPBrE2WZAw";
 
   useEffect(() => {
     if (authLoading || !CURRENT_USER_ID) return;
@@ -734,7 +774,6 @@ export default function EmailInvitesPage() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        console.log("Data Camapigns ", data);
         setCampaigns(data);
       } catch {
         setError("Failed to load campaigns");
@@ -750,12 +789,12 @@ export default function EmailInvitesPage() {
   };
 
   return (
-    <div className="h-screen bg-[#050505] text-white flex overflow-hidden">
+    <div className="h-screen bg-[#050505] text-white flex overflow-hidden w-full relative">
       <Sidebar />
 
-      <main className="flex-1 overflow-auto p-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+      <main className="flex-1 overflow-auto p-4 sm:p-6 w-full">
+        {/* Header Block with Flex Wraps */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
             <h1 className="text-sm font-bold text-white uppercase tracking-wider">
               Campaigns
@@ -765,12 +804,12 @@ export default function EmailInvitesPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* List / Calendar toggle */}
+          <div className="flex items-center gap-2 sm:gap-3 justify-between sm:justify-end w-full sm:w-auto">
+            {/* List / Calendar view toggler */}
             <div className="flex items-center bg-zinc-900 border border-white/10 rounded-xl p-1 gap-1">
               <button
                 onClick={() => setViewMode("list")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${
+                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${
                   viewMode === "list"
                     ? "bg-white/10 text-white"
                     : "text-zinc-500 hover:text-zinc-300"
@@ -781,7 +820,7 @@ export default function EmailInvitesPage() {
               </button>
               <button
                 onClick={() => setViewMode("calendar")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${
+                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${
                   viewMode === "calendar"
                     ? "bg-white/10 text-white"
                     : "text-zinc-500 hover:text-zinc-300"
@@ -794,15 +833,15 @@ export default function EmailInvitesPage() {
 
             <button
               onClick={() => router.push("/emailSenders")}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition-all text-xs font-bold text-zinc-300"
+              className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 transition-all text-xs font-bold text-zinc-300"
             >
               <Mail className="w-3.5 h-3.5" />
-              Email Senders
+              <span className="whitespace-nowrap">Email Senders</span>
             </button>
           </div>
         </div>
 
-        {/* Loading / Error */}
+        {/* Loading status panel wrapper */}
         {loading && (
           <div className="flex items-center justify-center h-64 gap-2 text-zinc-500">
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -816,7 +855,7 @@ export default function EmailInvitesPage() {
           </div>
         )}
 
-        {/* Empty state */}
+        {/* Empty dashboard notice framework */}
         {!loading && !error && campaigns.length === 0 && (
           <div className="flex flex-col items-center justify-center h-64 gap-3 text-zinc-600">
             <Megaphone className="w-8 h-8 opacity-30" />
@@ -824,7 +863,7 @@ export default function EmailInvitesPage() {
           </div>
         )}
 
-        {/* Content */}
+        {/* Dynamic responsive grid layout view container lists */}
         {!loading && !error && (
           <AnimatePresence mode="wait">
             {viewMode === "list" ? (
@@ -836,7 +875,7 @@ export default function EmailInvitesPage() {
                 transition={{ duration: 0.15 }}
               >
                 {campaigns.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {campaigns.map((campaign, i) => {
                       const pct =
                         campaign.total_recipients > 0
@@ -855,7 +894,7 @@ export default function EmailInvitesPage() {
                           onClick={() =>
                             router.push(`/campaign/${campaign.id}`)
                           }
-                          className="text-left bg-[#0b0b0b] border border-[#1a1a1a] hover:border-white/10 rounded-2xl p-4 transition-all group"
+                          className="text-left bg-[#0b0b0b] border border-[#1a1a1a] hover:border-white/10 rounded-2xl p-4 transition-all group w-full"
                         >
                           <div className="flex items-start justify-between mb-3">
                             <h2 className="text-xs font-semibold text-zinc-200 line-clamp-1 flex-1">
@@ -888,10 +927,6 @@ export default function EmailInvitesPage() {
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] text-zinc-600">
                               {formatDate(campaign.created_at)}
-                              {/* {formatDate(
-                                campaign.created_at,
-                                campaign.timezone,
-                              )} */}
                             </span>
                             <ChevronRight className="w-3.5 h-3.5 text-zinc-600 group-hover:text-zinc-400 transition-colors" />
                           </div>
@@ -908,8 +943,8 @@ export default function EmailInvitesPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.15 }}
-                className="bg-[#0b0b0b] border border-[#1a1a1a] rounded-2xl p-5"
-                style={{ minHeight: "600px" }}
+                className="bg-[#0b0b0b] border border-[#1a1a1a] rounded-2xl p-4 sm:p-5"
+                style={{ minHeight: "450px" }}
               >
                 <CalendarView
                   campaigns={campaigns}
@@ -922,7 +957,7 @@ export default function EmailInvitesPage() {
         )}
       </main>
 
-      {/* Create Campaign Modal */}
+      {/* Creation campaign interactive context element popups */}
       <AnimatePresence>
         {createModalOpen && (
           <CreateCampaignModal
