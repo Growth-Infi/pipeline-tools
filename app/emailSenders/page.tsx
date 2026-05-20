@@ -50,7 +50,7 @@ export default function EmailSendersPage() {
   const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
   const token =
     session?.access_token ||
-    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc5MjA0MTYxLCJpYXQiOjE3NzkyMDA1NjEsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzc4NTA1MDIxfV0sInNlc3Npb25faWQiOiI2ZDk2MGIzOS1lMzI3LTRjNWYtOWMwMC02MGFiZGM4NmU5Y2EiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.DwYxF8U-R9TGMMamNQjdF1N35M4_AppIEAVuUh8yHsJqiu5-CEzdUhBi0_FtcVerAOsgI3Qrc-XtZPBrE2WZAw";
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc5MjQ0NTc4LCJpYXQiOjE3NzkyNDA5NzgsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzc5MjQwOTc4fV0sInNlc3Npb25faWQiOiJlYTFiMjZiZC03OTk0LTRiNzEtOWI4OC04NGZkY2UzNzVjOWMiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ._ToiwR-prRBy8IhEV46uTI-pNMZt07mFiJnIs01lwEZDpEfUqX3XfdkfQQlfrI_8uGAwflEhKsjt4n6igQBiQA";
 
   // useEffect(() => {
   //     if (!authLoading && !user) router.push("/");
@@ -256,7 +256,18 @@ export default function EmailSendersPage() {
           </div>
         )}
 
-        {!error && senders.length === 0 && (
+        {/* 1. LOADING STATE DISPLAY */}
+        {loading && !error && (
+          <div className="flex flex-col items-center justify-center h-64 gap-2 text-zinc-500">
+            <Loader2 className="w-5 h-5 animate-spin text-blue-500" />
+            <p className="text-[10px] uppercase tracking-wider font-semibold">
+              Loading accounts...
+            </p>
+          </div>
+        )}
+
+        {/* 2. AUTHENTIC EMPTY STATE (Only displays if finished loading and accounts are zero) */}
+        {!loading && !error && senders.length === 0 && (
           <div className="flex flex-col items-center justify-center h-64 gap-3 text-zinc-600">
             <Mail className="w-8 h-8 opacity-30" />
             <p className="text-xs">No email senders added yet</p>
@@ -269,7 +280,8 @@ export default function EmailSendersPage() {
           </div>
         )}
 
-        {!error && senders.length > 0 && (
+        {/* 3. SENDERS LIST */}
+        {!loading && !error && senders.length > 0 && (
           <div className="space-y-2">
             {senders.map((sender, i) => {
               const pct =
@@ -311,7 +323,6 @@ export default function EmailSendersPage() {
 
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between text-[10px] text-zinc-500">
-                          {/* LEFT SIDE */}
                           <div className="flex items-center gap-2">
                             <Send className="w-3 h-3" />
                             <span>Daily usage</span>
@@ -328,7 +339,6 @@ export default function EmailSendersPage() {
                                   step={1}
                                   onChange={(e) => {
                                     const val = Number(e.target.value);
-
                                     setLimitMap((prev) => ({
                                       ...prev,
                                       [sender.id]: val,
@@ -371,7 +381,6 @@ export default function EmailSendersPage() {
                             )}
                           </div>
 
-                          {/* RIGHT SIDE */}
                           <span className="font-mono">
                             {sender.sent_today} / {sender.daily_limit}
                           </span>
@@ -386,14 +395,10 @@ export default function EmailSendersPage() {
                             {disconnectingId === sender.id ? (
                               <Loader2 className="w-3.5 h-3.5 animate-spin" />
                             ) : (
-                              <>
-                                <Trash2 className="w-3.5 h-3.5" />
-                                {/* <span>Disconnect</span> */}
-                              </>
+                              <Trash2 className="w-3.5 h-3.5" />
                             )}
                           </button>
                         </div>
-                        {/* PROGRESS BAR */}
                         <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
                           <motion.div
                             className={`h-full rounded-full ${
