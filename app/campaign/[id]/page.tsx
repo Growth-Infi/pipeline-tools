@@ -89,7 +89,7 @@ export default function CampaignDetailPage() {
   const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
   const token =
     session?.access_token ||
-    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc5MjA0MTYxLCJpYXQiOjE3NzkyMDA1NjEsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzc4NTA1MDIxfV0sInNlc3Npb25faWQiOiI2ZDk2MGIzOS1lMzI3LTRjNWYtOWMwMC02MGFiZGM4NmU5Y2EiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.DwYxF8U-R9TGMMamNQjdF1N35M4_AppIEAVuUh8yHsJqiu5-CEzdUhBi0_FtcVerAOsgI3Qrc-XtZPBrE2WZAw";
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc5MjQ0NTc4LCJpYXQiOjE3NzkyNDA5NzgsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzc5MjQwOTc4fV0sInNlc3Npb25faWQiOiJlYTFiMjZiZC03OTk0LTRiNzEtOWI4OC04NGZkY2UzNzVjOWMiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ._ToiwR-prRBy8IhEV46uTI-pNMZt07mFiJnIs01lwEZDpEfUqX3XfdkfQQlfrI_8uGAwflEhKsjt4n6igQBiQA";
 
   // useEffect(() => {
   //     if (!authLoading && !user) router.push("/");
@@ -195,12 +195,11 @@ export default function CampaignDetailPage() {
     return () => stopAllPolling();
   }, [id, CURRENT_USER_ID, authLoading, recipientsPage]);
 
-  if (authLoading)
-    return (
-      <div className="h-screen bg-[#050505] flex items-center justify-center">
-        <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
-      </div>
-    );
+  // if (authLoading) return (
+  //     <div className="h-screen bg-[#050505] flex items-center justify-center">
+  //         <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full" />
+  //     </div>
+  // );
 
   useEffect(() => {
     if (!campaign) return;
@@ -304,10 +303,17 @@ export default function CampaignDetailPage() {
   const totalPages = Math.ceil(recipientsTotal / PAGE_SIZE);
 
   return (
-    <div className="h-screen bg-[#050505] text-white flex overflow-hidden">
-      <Sidebar />
+    /* LINE 1: Added flex-col on mobile so the main content doesn't get pushed off-screen horizontally */
+    <div className="h-screen bg-[#050505] text-white flex flex-col md:flex-row overflow-hidden relative">
+      {/* To avoid modifying the Sidebar component file itself, we override its position here on mobile layout.
+        This forces the fixed desktop sidebar to cleanly hide or sit absolutely positioned out of the way on mobile viewports.
+      */}
+      <div className="hidden md:block shrink-0">
+        <Sidebar />
+      </div>
 
-      <main className="flex-1 overflow-auto p-8">
+      {/* LINE 2: Switched from flex-1 to full width bounds with natural overflow parameters on mobile devices */}
+      <main className="w-full md:flex-1 overflow-y-auto p-4 sm:p-8">
         <button
           onClick={() => router.back()}
           className="flex items-center gap-2 text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors mb-8"
@@ -337,25 +343,26 @@ export default function CampaignDetailPage() {
             className="space-y-8"
           >
             {/* Title row */}
-            <div className="flex items-start justify-between gap-6">
+            {/* CHANGED: flex-col on mobile so the action buttons wrap neatly instead of breaking the layout */}
+            <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
               <div>
-                <h1 className="text-2xl font-bold text-white mb-2">
+                <h1 className="text-xl md:text-2xl font-bold text-white mb-2 break-all">
                   {campaign.name}
                 </h1>
                 <span
-                  className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border capitalize ${status.classes}`}
+                  className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border capitalize inline-block ${status.classes}`}
                 >
                   {status.label}
                 </span>
               </div>
 
-              <div className="flex flex-col items-end gap-2">
+              <div className="flex flex-col items-start sm:items-end gap-2 w-full sm:w-auto">
                 {(campaign.status === "pending" ||
                   campaign.status === "draft") && (
                   <ActionButton
                     label="Start Campaign"
                     icon={<Play className="w-4 h-4" />}
-                    color="bg-emerald-600 hover:bg-emerald-500"
+                    color="bg-emerald-600 hover:bg-emerald-500 w-full sm:w-auto"
                     loading={actionLoading === "start"}
                     onClick={() => handleAction("start")}
                   />
@@ -364,7 +371,7 @@ export default function CampaignDetailPage() {
                   <ActionButton
                     label="Pause Campaign"
                     icon={<Pause className="w-4 h-4" />}
-                    color="bg-yellow-600 hover:bg-yellow-500"
+                    color="bg-yellow-600 hover:bg-yellow-500 w-full sm:w-auto"
                     loading={actionLoading === "pause"}
                     onClick={() => handleAction("pause")}
                   />
@@ -373,7 +380,7 @@ export default function CampaignDetailPage() {
                   <ActionButton
                     label="Resume Campaign"
                     icon={<RotateCcw className="w-4 h-4" />}
-                    color="bg-blue-600 hover:bg-blue-500"
+                    color="bg-blue-600 hover:bg-blue-500 w-full sm:w-auto"
                     loading={actionLoading === "resume"}
                     onClick={() => handleAction("resume")}
                   />
@@ -392,12 +399,13 @@ export default function CampaignDetailPage() {
             <div className="border-t border-white/5" />
 
             {/* Details grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2 flex items-start gap-4 bg-zinc-900/50 border border-white/5 rounded-2xl px-5 py-4">
+            {/* CHANGED: grid-cols-1 on mobile grids to stack elements vertically */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2 flex items-start gap-4 bg-zinc-900/50 border border-white/5 rounded-2xl px-5 py-4 min-w-0">
                 <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 shrink-0">
                   <Link2 className="w-4 h-4" />
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1">
                     Meet Link
                   </p>
@@ -407,21 +415,23 @@ export default function CampaignDetailPage() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 font-mono transition-colors break-all"
                   >
-                    {campaign.meeting_link?.replace("https://", "")}
+                    <span className="truncate">
+                      {campaign.meeting_link?.replace("https://", "")}
+                    </span>
                     <ExternalLink className="w-3 h-3 shrink-0" />
                   </a>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 bg-zinc-900/50 border border-white/5 rounded-2xl px-5 py-4">
+              <div className="flex items-start gap-4 bg-zinc-900/50 border border-white/5 rounded-2xl px-5 py-4 min-w-0">
                 <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shrink-0">
                   <Play className="w-4 h-4" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1">
                     Start Time
                   </p>
-                  <p className="text-xs text-zinc-200 font-mono">
+                  <p className="text-xs text-zinc-200 font-mono break-words">
                     {campaign.start_time
                       ? formatDate(campaign.start_time, campaign.timezone)
                       : "—"}
@@ -429,15 +439,15 @@ export default function CampaignDetailPage() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 bg-zinc-900/50 border border-white/5 rounded-2xl px-5 py-4">
+              <div className="flex items-start gap-4 bg-zinc-900/50 border border-white/5 rounded-2xl px-5 py-4 min-w-0">
                 <div className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 shrink-0">
                   <Pause className="w-4 h-4" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1">
                     End Time
                   </p>
-                  <p className="text-xs text-zinc-200 font-mono">
+                  <p className="text-xs text-zinc-200 font-mono break-words">
                     {campaign.end_time
                       ? formatDate(campaign.end_time, campaign.timezone)
                       : "—"}
@@ -459,15 +469,15 @@ export default function CampaignDetailPage() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 bg-zinc-900/50 border border-white/5 rounded-2xl px-5 py-4">
+              <div className="flex items-start gap-4 bg-zinc-900/50 border border-white/5 rounded-2xl px-5 py-4 min-w-0">
                 <div className="p-2 rounded-xl bg-zinc-500/10 border border-zinc-500/20 text-zinc-400 shrink-0">
                   <Calendar className="w-4 h-4" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1">
                     Created
                   </p>
-                  <p className="text-xs text-zinc-500 font-mono">
+                  <p className="text-xs text-zinc-500 font-mono break-words">
                     {formatDate(campaign.created_at)}
                   </p>
                 </div>
@@ -476,7 +486,7 @@ export default function CampaignDetailPage() {
 
             {/* Recipients list */}
             <div className="mt-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                 <h2 className="text-xs text-zinc-500 uppercase tracking-wider">
                   Recipients by Sender
                 </h2>
@@ -508,12 +518,12 @@ export default function CampaignDetailPage() {
                     ([senderEmail, senderRecipients]) => (
                       <div
                         key={senderEmail}
-                        className="border border-white/5 rounded-2xl overflow-hidden"
+                        className="border border-white/5 rounded-2xl overflow-hidden bg-zinc-950/40"
                       >
-                        <div className="bg-zinc-900/80 px-4 py-3 border-b border-white/5 flex items-center justify-between">
-                          <div>
+                        <div className="bg-zinc-900/80 px-4 py-3 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                          <div className="min-w-0 flex-1">
                             <p
-                              className={`text-xs font-semibold ${
+                              className={`text-xs font-semibold truncate ${
                                 senderEmail === "Not Assigned"
                                   ? "text-zinc-400"
                                   : "text-[#b8a98a]"
@@ -532,10 +542,12 @@ export default function CampaignDetailPage() {
                           {senderRecipients.map((r) => (
                             <div
                               key={r.id}
-                              className="grid grid-cols-2 px-4 py-3 text-xs"
+                              className="grid grid-cols-2 px-4 py-3 text-xs gap-2 min-w-0 items-center"
                             >
-                              <span className="text-zinc-200">{r.email}</span>
-                              <span className="text-zinc-500 capitalize">
+                              <span className="text-zinc-200 truncate pr-2">
+                                {r.email}
+                              </span>
+                              <span className="text-zinc-500 capitalize truncate">
                                 {r.status}
                               </span>
                             </div>
