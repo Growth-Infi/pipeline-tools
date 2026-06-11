@@ -75,7 +75,7 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
   const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
   const token =
     session?.access_token ||
-    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzgxMDIwNjAxLCJpYXQiOjE3ODEwMTcwMDEsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzgwNDc5NDQzfV0sInNlc3Npb25faWQiOiI5NThiN2VhOS1mNjhlLTRhMDUtYjk1Yi1kMTRiYWQ0YjA2YzQiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.lcvBwZsoe9wE9FwxbymmCXAvJ3vzEgayUsIdWcgJgV9bmH26KU2McZLAyxtWZR_m9Uh9v7ALsV2GyfQQ1YKY7Q";
+    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzgxMTk4MzAyLCJpYXQiOjE3ODExOTQ3MDIsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzgwNDc5NDQzfV0sInNlc3Npb25faWQiOiI5NThiN2VhOS1mNjhlLTRhMDUtYjk1Yi1kMTRiYWQ0YjA2YzQiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.cR8hYIwkRYMz2MATBTZ18eEBu2U4kpEFVDRRSGOPuJfmc9dp_NKSM-5JYme8uYKMxchSVsyg3P7bPBxR3zsVCg";
 
   // Form State
   const [name, setName] = useState("");
@@ -90,6 +90,9 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
   );
   const [startTime, setStartTime] = useState(formatToDateTimeLocal(new Date()));
   const [endTime, setEndTime] = useState("");
+
+  const [viewMonth, setViewMonth] = useState(new Date().getMonth());
+  const [viewYear, setViewYear] = useState(new Date().getFullYear());
 
   // Sender State
   const [senders, setSenders] = useState<any[]>([]);
@@ -324,34 +327,257 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
               {/* Scheduling Section */}
               <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
+                  {/* Calendar */}
+                  <div className="space-y-2">
                     <label className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> Start Time
+                      <Calendar className="w-3 h-3" /> Date Range
                     </label>
-                    <input
-                      type="datetime-local"
-                      value={startTime}
-                      onChange={(e) => setStartTime(e.target.value)}
-                      className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-rose-500/50"
-                    />
+                    <div className="bg-black border border-white/10 rounded-xl p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const d = new Date(startTime || Date.now());
+                            d.setMonth(d.getMonth() - 1);
+                            setViewMonth(d.getMonth());
+                            setViewYear(d.getFullYear());
+                          }}
+                          className="w-6 h-6 flex items-center justify-center rounded-md text-zinc-400 hover:text-white hover:bg-white/10 text-sm"
+                        >
+                          ‹
+                        </button>
+                        <span className="text-[11px] font-medium text-zinc-300">
+                          {
+                            [
+                              "Jan",
+                              "Feb",
+                              "Mar",
+                              "Apr",
+                              "May",
+                              "Jun",
+                              "Jul",
+                              "Aug",
+                              "Sep",
+                              "Oct",
+                              "Nov",
+                              "Dec",
+                            ][viewMonth]
+                          }{" "}
+                          {viewYear}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (viewMonth === 11) {
+                              setViewMonth(0);
+                              setViewYear((y) => y + 1);
+                            } else setViewMonth((m) => m + 1);
+                          }}
+                          className="w-6 h-6 flex items-center justify-center rounded-md text-zinc-400 hover:text-white hover:bg-white/10 text-sm"
+                        >
+                          ›
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-7 mb-1">
+                        {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
+                          <div
+                            key={i}
+                            className="text-center text-[9px] text-zinc-600 font-medium py-0.5"
+                          >
+                            {d}
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="grid grid-cols-7 gap-y-0.5">
+                        {(() => {
+                          const pad = (n: number) => String(n).padStart(2, "0");
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          const firstDay = new Date(
+                            viewYear,
+                            viewMonth,
+                            1,
+                          ).getDay();
+                          const daysInMonth = new Date(
+                            viewYear,
+                            viewMonth + 1,
+                            0,
+                          ).getDate();
+                          const cells = [];
+
+                          // current time portion from startTime/endTime
+                          const startTimePart =
+                            startTime?.slice(11, 16) || "09:00";
+                          const endTimePart = endTime?.slice(11, 16) || "09:30";
+                          const startDatePart = startTime?.slice(0, 10) || "";
+                          const endDatePart = endTime?.slice(0, 10) || "";
+
+                          for (let i = 0; i < firstDay; i++)
+                            cells.push(<div key={`e-${i}`} />);
+
+                          for (let d = 1; d <= daysInMonth; d++) {
+                            const dateStr = `${viewYear}-${pad(viewMonth + 1)}-${pad(d)}`;
+                            const date = new Date(viewYear, viewMonth, d);
+                            const isPast = date < today;
+                            const isStart = dateStr === startDatePart;
+                            const isEnd = dateStr === endDatePart;
+                            const inRange =
+                              startDatePart &&
+                              endDatePart &&
+                              dateStr > startDatePart &&
+                              dateStr < endDatePart;
+
+                            cells.push(
+                              <button
+                                key={d}
+                                type="button"
+                                disabled={isPast}
+                                onClick={() => {
+                                  if (!startTime || endTime) {
+                                    // picking start
+                                    setStartTime(`${dateStr}T${startTimePart}`);
+                                    setEndTime("");
+                                  } else {
+                                    // picking end
+                                    const newEnd =
+                                      dateStr < startDatePart
+                                        ? startDatePart
+                                        : dateStr;
+                                    const newStart =
+                                      dateStr < startDatePart
+                                        ? dateStr
+                                        : startDatePart;
+                                    setStartTime(
+                                      `${newStart}T${startTimePart}`,
+                                    );
+                                    setEndTime(`${newEnd}T${endTimePart}`);
+                                  }
+                                }}
+                                className={`text-center text-[11px] py-1 rounded-md transition-all
+                    ${isPast ? "text-zinc-700 cursor-not-allowed" : ""}
+                    ${isStart || isEnd ? "bg-rose-500 text-white font-medium" : ""}
+                    ${inRange ? "bg-rose-500/15 text-rose-300" : ""}
+                    ${!isStart && !isEnd && !inRange && !isPast ? "text-zinc-400 hover:bg-white/10 hover:text-white" : ""}
+                  `}
+                              >
+                                {d}
+                              </button>,
+                            );
+                          }
+                          return cells;
+                        })()}
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> End Time
-                    </label>
-                    <input
-                      type="datetime-local"
-                      value={endTime}
-                      onChange={(e) => setEndTime(e.target.value)}
-                      className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-rose-500/50"
-                    />
+
+                  {/* Time & Duration */}
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> Start Time
+                      </label>
+                      <input
+                        type="time"
+                        value={startTime?.slice(11, 16) || ""}
+                        onChange={(e) => {
+                          const datePart =
+                            startTime?.slice(0, 10) ||
+                            formatToDateTimeLocal(new Date()).slice(0, 10);
+                          setStartTime(`${datePart}T${e.target.value}`);
+                          // auto update end time +30
+                          const [h, m] = e.target.value.split(":").map(Number);
+                          const total = h * 60 + m + 30;
+                          const newTime = `${String(Math.floor(total / 60) % 24).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
+                          const endDatePart = endTime?.slice(0, 10) || datePart;
+                          setEndTime(`${endDatePart}T${newTime}`);
+                        }}
+                        className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500/50 font-mono"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> End Time
+                      </label>
+                      <input
+                        type="time"
+                        value={endTime?.slice(11, 16) || ""}
+                        onChange={(e) => {
+                          const datePart =
+                            endTime?.slice(0, 10) ||
+                            startTime?.slice(0, 10) ||
+                            formatToDateTimeLocal(new Date()).slice(0, 10);
+                          setEndTime(`${datePart}T${e.target.value}`);
+                        }}
+                        className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500/50 font-mono"
+                      />
+                    </div>
+
+                    {/* Quick duration */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-zinc-500 uppercase">
+                        Duration
+                      </label>
+                      <div className="grid grid-cols-4 gap-1">
+                        {[15, 30, 45, 60].map((mins) => {
+                          const startT = startTime?.slice(11, 16);
+                          const [h, m] = (startT || "09:00")
+                            .split(":")
+                            .map(Number);
+                          const total = h * 60 + m + mins;
+                          const projected = `${String(Math.floor(total / 60) % 24).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
+                          const isActive = endTime?.slice(11, 16) === projected;
+                          return (
+                            <button
+                              key={mins}
+                              type="button"
+                              onClick={() => {
+                                const datePart =
+                                  endTime?.slice(0, 10) ||
+                                  startTime?.slice(0, 10) ||
+                                  formatToDateTimeLocal(new Date()).slice(
+                                    0,
+                                    10,
+                                  );
+                                setEndTime(`${datePart}T${projected}`);
+                              }}
+                              className={`py-1.5 rounded-lg text-[10px] font-medium border transition-all
+                  ${isActive ? "bg-rose-500/20 border-rose-500/40 text-rose-300" : "bg-zinc-900 border-white/5 text-zinc-500 hover:border-white/20 hover:text-zinc-300"}`}
+                            >
+                              {mins}m
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Summary */}
+                    {startTime && (
+                      <div className="p-2.5 rounded-lg bg-zinc-900 border border-white/5 space-y-1">
+                        <div className="flex justify-between text-[10px]">
+                          <span className="text-zinc-500">Start</span>
+                          <span className="text-zinc-300 font-mono">
+                            {startTime.replace("T", " ")}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-[10px]">
+                          <span className="text-zinc-500">End</span>
+                          <span className="text-zinc-300 font-mono">
+                            {endTime ? endTime.replace("T", " ") : "—"}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
+
+                {/* Timezone */}
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-1">
                     <Globe className="w-3 h-3" /> Timezone
                   </label>
-
                   <TimezoneSelect value={timezone} onChange={setTimezone} />
                 </div>
               </div>
