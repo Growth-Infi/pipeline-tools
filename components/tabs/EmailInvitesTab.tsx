@@ -12,12 +12,23 @@ import {
   Globe,
   UserCheck,
   AlignLeft,
+  Bold,
+  Italic,
+  Heading2,
+  Heading3,
+  List,
+  ListOrdered,
+  Link2,
+  Minus,
+  Undo2,
+  Redo2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import TimezoneSelect from "../TimezoneSelect";
-import { useSearchParams } from "next/navigation";
-
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
 const API_BASE = process.env.NEXT_PUBLIC_MEET_INVITE_BACKEND_URL;
 console.log("API_BASE ", API_BASE);
 
@@ -32,6 +43,204 @@ const formatToDateTimeLocal = (date: Date) => {
   return `${y}-${m}-${d}T${hh}:${mm}`;
 };
 
+function ToolbarButton({
+  onClick,
+  active,
+  disabled,
+  title,
+  children,
+}: {
+  onClick: () => void;
+  active?: boolean;
+  disabled?: boolean;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onMouseDown={(e) => {
+        e.preventDefault(); // prevent editor blur
+        onClick();
+      }}
+      disabled={disabled}
+      title={title}
+      className={`p-1.5 rounded-md transition-all flex items-center justify-center
+        ${
+          active
+            ? "bg-rose-500/20 text-rose-400 border border-rose-500/30"
+            : "text-zinc-500 hover:text-zinc-200 hover:bg-white/10 border border-transparent"
+        }
+        ${disabled ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}`}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ─── Tiptap Rich Text Editor ───────────────────────────────────────────────────
+function RichTextEditor({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string;
+  onChange: (html: string) => void;
+  placeholder?: string;
+}) {
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        heading: { levels: [2, 3] },
+        bulletList: { keepMarks: true },
+        orderedList: { keepMarks: true },
+      }),
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: { class: "text-rose-400 underline underline-offset-2" },
+      }),
+    ],
+    content: value,
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      // Treat empty paragraph as empty string
+      onChange(html === "<p></p>" ? "" : html);
+    },
+    editorProps: {
+      attributes: {
+        class:
+          "min-h-[80px] max-h-[200px] overflow-y-auto px-3 py-2 text-xs text-zinc-200 focus:outline-none prose-custom",
+      },
+    },
+  });
+
+  const setLink = () => {
+    if (!editor) return;
+    const prev = editor.getAttributes("link").href ?? "";
+    const url = window.prompt("URL", prev);
+    if (url === null) return;
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    } else {
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: url })
+        .run();
+    }
+  };
+
+  if (!editor) return null;
+
+  return (
+    <div className="bg-black border border-white/10 rounded-lg overflow-hidden focus-within:border-rose-500/50 transition-colors">
+      {/* Toolbar */}
+      <div className="flex items-center gap-0.5 px-2 py-1.5 border-b border-white/10 bg-zinc-950/60 flex-wrap">
+        {/* History */}
+        <ToolbarButton
+          onClick={() => editor.chain().focus().undo().run()}
+          disabled={!editor.can().undo()}
+          title="Undo"
+        >
+          <Undo2 className="w-3.5 h-3.5" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().redo().run()}
+          disabled={!editor.can().redo()}
+          title="Redo"
+        >
+          <Redo2 className="w-3.5 h-3.5" />
+        </ToolbarButton>
+
+        <div className="w-px h-3.5 bg-white/10 mx-1" />
+
+        {/* Text style */}
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          active={editor.isActive("bold")}
+          title="Bold (⌘B)"
+        >
+          <Bold className="w-3.5 h-3.5" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          active={editor.isActive("italic")}
+          title="Italic (⌘I)"
+        >
+          <Italic className="w-3.5 h-3.5" />
+        </ToolbarButton>
+
+        <div className="w-px h-3.5 bg-white/10 mx-1" />
+
+        {/* Headings */}
+        <ToolbarButton
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
+          active={editor.isActive("heading", { level: 2 })}
+          title="Heading"
+        >
+          <Heading2 className="w-3.5 h-3.5" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 3 }).run()
+          }
+          active={editor.isActive("heading", { level: 3 })}
+          title="Subheading"
+        >
+          <Heading3 className="w-3.5 h-3.5" />
+        </ToolbarButton>
+
+        <div className="w-px h-3.5 bg-white/10 mx-1" />
+
+        {/* Lists */}
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          active={editor.isActive("bulletList")}
+          title="Bullet list"
+        >
+          <List className="w-3.5 h-3.5" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          active={editor.isActive("orderedList")}
+          title="Numbered list"
+        >
+          <ListOrdered className="w-3.5 h-3.5" />
+        </ToolbarButton>
+
+        <div className="w-px h-3.5 bg-white/10 mx-1" />
+
+        {/* Link & Divider */}
+        <ToolbarButton
+          onClick={setLink}
+          active={editor.isActive("link")}
+          title="Insert link"
+        >
+          <Link2 className="w-3.5 h-3.5" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setHorizontalRule().run()}
+          title="Divider"
+        >
+          <Minus className="w-3.5 h-3.5" />
+        </ToolbarButton>
+      </div>
+
+      {/* Editor area with placeholder */}
+      <div className="relative">
+        {editor.isEmpty && placeholder && (
+          <p className="absolute top-2 left-3 text-xs text-zinc-600 pointer-events-none select-none">
+            {placeholder}
+          </p>
+        )}
+        <EditorContent editor={editor} />
+      </div>
+    </div>
+  );
+}
 export default function EmailInvitesTab() {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -73,10 +282,7 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
   // const CURRENT_USER_ID = user?.id;
   // const token = session?.access_token;
   const CURRENT_USER_ID = user?.id || "ed3e59b8-2e6c-44ea-9f7b-1c8248fa3973";
-  const token =
-    session?.access_token ||
-    "eyJhbGciOiJFUzI1NiIsImtpZCI6IjI0ZmJiMGY3LWFjZDItNDg2NS1hOGNiLTQ4ZTVmYzQ1ODkwNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2RyZXBndm1xZmhwb3h5ZGVxcnVuLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlZDNlNTliOC0yZTZjLTQ0ZWEtOWY3Yi0xYzgyNDhmYTM5NzMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzgxMTk4MzAyLCJpYXQiOjE3ODExOTQ3MDIsImVtYWlsIjoidmVkYW50ZGVzaG11a2gzMTA4QGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZ29vZ2xlIiwicHJvdmlkZXJzIjpbImdvb2dsZSJdfSwidXNlcl9tZXRhZGF0YSI6eyJhdmF0YXJfdXJsIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jS3FGOWIzWTczYllMYkg4STBQa3FuMUM3cVlXak1OUGhYeHZVNDhsSlNkbnVkOEZBPXM5Ni1jIiwiZW1haWwiOiJ2ZWRhbnRkZXNobXVraDMxMDhAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZ1bGxfbmFtZSI6IlZlZGFudCBEZXNobXVraCIsImlzcyI6Imh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbSIsIm5hbWUiOiJWZWRhbnQgRGVzaG11a2giLCJwaG9uZV92ZXJpZmllZCI6ZmFsc2UsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLcUY5YjNZNzNiWUxiSDhJMFBrcW4xQzdxWVdqTU5QaFh4dlU0OGxKU2RudWQ4RkE9czk2LWMiLCJwcm92aWRlcl9pZCI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyIsInN1YiI6IjExNTAwNTI5NTczNzU3NjU2NjA1MyJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6Im9hdXRoIiwidGltZXN0YW1wIjoxNzgwNDc5NDQzfV0sInNlc3Npb25faWQiOiI5NThiN2VhOS1mNjhlLTRhMDUtYjk1Yi1kMTRiYWQ0YjA2YzQiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.cR8hYIwkRYMz2MATBTZ18eEBu2U4kpEFVDRRSGOPuJfmc9dp_NKSM-5JYme8uYKMxchSVsyg3P7bPBxR3zsVCg";
-
+  const token = session?.access_token;
   // Form State
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -166,7 +372,7 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
     const payload = {
       user_id: CURRENT_USER_ID,
       name: name.trim(),
-      description: description.trim(),
+      description: description,
       event_title: eventTitle.trim(),
       meeting_link: meetLink.trim(),
       timezone,
@@ -262,30 +468,15 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
 
+              {/* ── Rich Text Description ── */}
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-1">
                   <AlignLeft className="w-3 h-3" /> Description
                 </label>
-
-                <textarea
+                <RichTextEditor
                   value={description}
-                  style={{
-                    resize: "none",
-                    overflow: "hidden",
-                    maxHeight: "200px",
-                  }}
-                  // Change overflow to "auto" when content exceeds maxHeight
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                    e.target.style.height = "auto";
-                    const newHeight = e.target.scrollHeight;
-                    e.target.style.height = `${Math.min(newHeight, 200)}px`;
-                    e.target.style.overflowY =
-                      newHeight > 200 ? "auto" : "hidden";
-                  }}
-                  placeholder="Supports **bold**, *italic*, ### headings, - lists..."
-                  rows={2}
-                  className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500/50"
+                  onChange={setDescription}
+                  placeholder="Write a description — supports bold, italic, headings, lists, and links…"
                 />
               </div>
 
