@@ -24,3 +24,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Tiptap editor styles */
+.prose-custom p { margin: 0 0 0.4rem; line-height: 1.55; }
+.prose-custom h2 { font-size: 0.78rem; font-weight: 700; color: #e4e4e7; margin: 0.6rem 0 0.2rem; }
+.prose-custom h3 { font-size: 0.72rem; font-weight: 600; color: #d4d4d8; margin: 0.4rem 0 0.15rem; }
+.prose-custom ul { list-style: disc; padding-left: 1.1rem; margin: 0.2rem 0; }
+.prose-custom ol { list-style: decimal; padding-left: 1.1rem; margin: 0.2rem 0; }
+.prose-custom li { margin: 0.1rem 0; color: #a1a1aa; }
+.prose-custom a { color: #fb7185; text-decoration: underline; }
+.prose-custom hr { border-color: rgba(255,255,255,0.08); margin: 0.4rem 0; }
+.prose-custom strong { color: #f4f4f5; font-weight: 600; }
+.prose-custom em { color: #a1a1aa; }
+.ProseMirror:focus { outline: none; }
+.ProseMirror p:last-child { margin-bottom: 0; }
