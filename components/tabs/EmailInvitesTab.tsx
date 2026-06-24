@@ -444,8 +444,9 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-1">
-                    <Megaphone className="w-3 h-3" /> Campaign Name
+                    <Megaphone className="w-3 h-3" /> Campaign Name (Internal)
                   </label>
+
                   <input
                     type="text"
                     value={name}
@@ -456,7 +457,7 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-1">
-                    <Calendar className="w-3 h-3" /> Event Title
+                    <Calendar className="w-3 h-3" /> Event Title *
                   </label>
                   <input
                     type="text"
@@ -471,7 +472,7 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
               {/* ── Rich Text Description ── */}
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-zinc-500 uppercase flex items-center gap-1">
-                  <AlignLeft className="w-3 h-3" /> Description
+                  <AlignLeft className="w-3 h-3" /> Description *
                 </label>
                 <RichTextEditor
                   value={description}
@@ -490,7 +491,7 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
                     type="url"
                     value={meetLink}
                     onChange={(e) => setMeetLink(e.target.value)}
-                    placeholder="https://meet.google.com/..."
+                    placeholder="Will be attached in location field..."
                     className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-rose-500/50 font-mono"
                   />
                 </div>
