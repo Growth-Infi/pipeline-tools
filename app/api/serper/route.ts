@@ -1,124 +1,14 @@
-// import { NextRequest, NextResponse } from "next/server";
-
-// const API_KEY = process.env.SERPER_API_KEY!;
-// const CONCURRENCY = 1;
-// // console.log("API KEY:", API_KEY);
-// if (!API_KEY) {
-//   console.error("❌ SERPER_API_KEY missing");
-// }
-// // simple in-memory cache for speed boost
-// const cache = new Map<string, string>();
-
-// async function getDomain(company: string, retries = 2): Promise<string> {
-//   if (cache.has(company)) {
-//     return cache.get(company)!;
-//   }
-
-//   try {
-//     const res = await fetch("https://google.serper.dev/search", {
-//       method: "POST",
-//       headers: {
-//         "X-API-KEY": API_KEY,
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ q: `${company} official website` }),
-//     });
-
-//     const data = await res.json();
-//     const organic = data?.organic;
-
-//     if (!organic || organic.length === 0) {
-//       console.warn("⚠️ Not Found - No organic results for:", company);
-//       console.log(" FULL API response:", JSON.stringify(data, null, 2));
-//       return "Not Found";
-//     }
-
-//     const first = organic[0];
-
-//     if (!first?.link) {
-//       console.warn("⚠️ Not Found - Missing link for:", company);
-//       console.log(" First result:", first);
-//       return "Not Found";
-//     }
-
-//     let domain = "Not Found";
-
-//     try {
-//       domain = new URL(first.link).hostname.replace("www.", "");
-//     } catch (e) {
-//       console.error("⚠️ URL parse failed for:", company, "| link:", first.link);
-//       return "Error";
-//     }
-
-//     cache.set(company, domain);
-//     return domain;
-//   } catch (err) {
-//     console.error("⚠️ Fetch error for:", company, err);
-
-//     if (retries > 0) {
-//       await new Promise((r) => setTimeout(r, 1000));
-//       return getDomain(company, retries - 1);
-//     }
-
-//     console.error("⚠️ Failed after retries:", company);
-//     return "Error";
-//   }
-// }
-
-// export async function POST(req: NextRequest) {
-//   try {
-//     const { companies } = await req.json();
-
-//     if (!Array.isArray(companies)) {
-//       return NextResponse.json({ error: "Invalid input" }, { status: 400 });
-//     }
-
-//     const results: string[] = new Array(companies.length);
-
-//     //  NEW: failure tracking
-//     let failCount = 0;
-//     const MAX_FAILS = 15;
-
-//     for (let i = 0; i < companies.length; i += CONCURRENCY) {
-//       // NEW: early stop condition
-//       if (failCount >= MAX_FAILS) {
-//         console.warn("🛑 Too many failures, stopping early");
-//         break;
-//       }
-
-//       const batch = companies.slice(i, i + CONCURRENCY);
-
-//       const batchResults = await Promise.all(batch.map((c) => getDomain(c)));
-
-//       batchResults.forEach((res, idx) => {
-//         results[i + idx] = res;
-
-//         //  NEW: count failures
-//         if (res === "Not Found" || res === "Error") {
-//           failCount++;
-//         }
-//       });
-//     }
-
-//     return NextResponse.json({
-//       domains: results,
-//       stoppedEarly: failCount >= MAX_FAILS, // returns true if exceeds
-//       failCount,
-//     });
-//   } catch (e: any) {
-//     console.error("🚨 API error:", e);
-//     return NextResponse.json({ error: e.message }, { status: 500 });
-//   }
-// }
-
 import { NextRequest, NextResponse } from "next/server";
 import { parse } from "tldts";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.SUPABASE_URLt!,
+  process.env.SUPABASE_SERVICE_ROLE_KEYt!,
+);
 
 const API_KEY = process.env.SERPER_API_KEY!;
 const CONCURRENCY = 1;
-
-// simple memory cache
-const cache = new Map<string, string>();
 
 const BAD_DOMAINS = [
   "linkedin.com",
@@ -239,25 +129,21 @@ async function getDomain(
   }
 
   // cache key
-  const cacheKey = `${trimmedCompany}-${context || ""}`;
-
-  if (cache.has(cacheKey)) {
-    return cache.get(cacheKey)!;
-  }
+  const companyKey = cleanCompanyName(trimmedCompany);
+  const cacheKey = context?.trim()
+    ? `${companyKey}-${context.trim()}`
+    : companyKey;
 
   try {
-    // ----------------------------
-    // build smarter queries
-    // ----------------------------
+    // multiple queries
 
     const queries = [
       `${trimmedCompany} official website`,
       `${trimmedCompany} company`,
     ];
-
     // add contextual keyword ONLY if provided
-    if (context && context.trim() !== "") {
-      queries.unshift(`${trimmedCompany} ${context} official website`);
+    if (context?.trim()) {
+      queries.unshift(`${trimmedCompany} ${context.trim()} official website`);
     }
 
     let bestDomain = "Not Found";
@@ -265,7 +151,7 @@ async function getDomain(
 
     // search each query
     for (const query of queries) {
-      console.log(`Searching: ${query}`);
+      // console.log(`Searching: ${query}`);
 
       const res = await fetch("https://google.serper.dev/search", {
         method: "POST",
@@ -307,16 +193,16 @@ async function getDomain(
 
           const score = scoreDomain(hostname, trimmedCompany);
 
-          console.log(
-            `Company: ${trimmedCompany} | Host: ${hostname} | Score: ${score}`,
-          );
+          // console.log(
+          //   `Company: ${trimmedCompany} | Host: ${hostname} | Score: ${score}`,
+          // );
 
           if (score > bestScore) {
             bestScore = score;
             bestDomain = rootDomain;
           }
           if (score === 10) {
-            cache.set(cacheKey, bestDomain);
+            //perfect match
             return bestDomain;
           }
           // early exit on perfect match
@@ -326,13 +212,8 @@ async function getDomain(
           continue;
         }
       }
-      if (bestScore >= 7) {
-        cache.set(cacheKey, bestDomain);
-        return bestDomain;
-      }
+      if (bestScore >= 7) break;
     }
-
-    cache.set(cacheKey, bestDomain);
 
     return bestDomain;
   } catch (err) {
@@ -354,6 +235,11 @@ async function getDomain(
 
 export async function POST(req: NextRequest) {
   try {
+    const authHeader = req.headers.get("authorization");
+    if (authHeader !== `Bearer ${process.env.INTERNAL_API_SECRET}`) {
+      console.log("Auth failed for serper API internal ");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const body = await req.json();
 
     const companies = body.companies;
@@ -362,35 +248,55 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid input" }, { status: 400 });
     }
 
+    // BATCH CACHE LOOKUP
+    const rows = companies.map((row: any) => {
+      const company = typeof row === "string" ? row : row.company;
+      const context = typeof row === "string" ? "" : row.context?.trim() || "";
+      const companyKey = cleanCompanyName(company.trim());
+      const cacheKey = context ? `${companyKey}-${context}` : companyKey;
+      return { company, context, cacheKey };
+    });
+
+    const { data: cachedRows } = await supabase
+      .from("domain_cache")
+      .select("company_key, domain")
+      .in(
+        "company_key",
+        rows.map((r) => r.cacheKey),
+      );
+
+    const cacheMap = new Map(
+      cachedRows?.map((r) => [r.company_key, r.domain]) || [],
+    );
+
     const results: string[] = new Array(companies.length);
-
+    const newCacheRecords: { company_key: string; domain: string }[] = [];
     let failCount = 0;
-
     const MAX_FAILS = 15;
 
-    for (let i = 0; i < companies.length; i += CONCURRENCY) {
+    for (let i = 0; i < rows.length; i += CONCURRENCY) {
       if (failCount >= MAX_FAILS) {
         console.warn("🛑 Too many failures, stopping early");
-
         break;
       }
 
-      const batch = companies.slice(i, i + CONCURRENCY);
+      const batch = rows.slice(i, i + CONCURRENCY);
 
       const batchResults = await Promise.all(
-        batch.map(async (row: any) => {
-          // supports BOTH:
-          // "Google"
-          // { company: "Google", context: "search engine" }
-
-          if (typeof row === "string") {
-            return getDomain(row);
+        batch.map(async ({ company, context, cacheKey }) => {
+          const hit = cacheMap.get(cacheKey);
+          if (hit) {
+            console.log(`Cache hit: ${company} → ${hit}`); // if found in DB
+            return Promise.resolve(hit);
           }
-          console.log(
-            `Found context for ${row.company} -  Context word - ${row.context}`,
-          );
-
-          return getDomain(row.company, row.context);
+          const freshDomain = await getDomain(company, context); // only misses sent to Serper
+          if (freshDomain !== "Error" && freshDomain !== "Not Found") {
+            newCacheRecords.push({
+              company_key: cacheKey,
+              domain: freshDomain,
+            });
+          }
+          return freshDomain;
         }),
       );
 
@@ -402,7 +308,15 @@ export async function POST(req: NextRequest) {
         }
       });
     }
-
+    //  Single Bulk Insert for all newly found domains!
+    if (newCacheRecords.length > 0) {
+      console.log(
+        `Bulk saving ${newCacheRecords.length} new domains to cache...`,
+      );
+      await supabase
+        .from("domain_cache")
+        .upsert(newCacheRecords, { onConflict: "company_key" });
+    }
     return NextResponse.json({
       domains: results,
       stoppedEarly: failCount >= MAX_FAILS,

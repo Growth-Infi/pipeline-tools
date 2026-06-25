@@ -96,7 +96,10 @@ export default function DomainFindTab() {
       try {
         const res = await fetch("/api/serper", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_INTERNAL_API_SECRET}`,
+          },
           body: JSON.stringify({ companies: batch }),
         });
 
