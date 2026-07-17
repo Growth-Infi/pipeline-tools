@@ -343,9 +343,8 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
     fetchSenders();
   }, [user]);
 
-  // Auto-set end time to 30 mins after start time
   useEffect(() => {
-    if (startTime) {
+    if (startTime && !endTime) {
       const start = new Date(startTime);
       const end = new Date(start.getTime() + 30 * 60000);
       setEndTime(formatToDateTimeLocal(end));
@@ -677,13 +676,14 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
                           const datePart =
                             startTime?.slice(0, 10) ||
                             formatToDateTimeLocal(new Date()).slice(0, 10);
-                          setStartTime(`${datePart}T${e.target.value}`);
-                          // auto update end time +30
-                          const [h, m] = e.target.value.split(":").map(Number);
-                          const total = h * 60 + m + 30;
-                          const newTime = `${String(Math.floor(total / 60) % 24).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
-                          const endDatePart = endTime?.slice(0, 10) || datePart;
-                          setEndTime(`${endDatePart}T${newTime}`);
+                          const newStart = `${datePart}T${e.target.value}`;
+                          setStartTime(newStart);
+
+                          const startDate = new Date(`${newStart}:00`);
+                          const endDate = new Date(
+                            startDate.getTime() + 30 * 60000,
+                          );
+                          setEndTime(formatToDateTimeLocal(endDate));
                         }}
                         className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500/50 font-mono"
                       />
@@ -697,11 +697,31 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
                         type="time"
                         value={endTime?.slice(11, 16) || ""}
                         onChange={(e) => {
-                          const datePart =
-                            endTime?.slice(0, 10) ||
+                          const startDatePart =
                             startTime?.slice(0, 10) ||
                             formatToDateTimeLocal(new Date()).slice(0, 10);
-                          setEndTime(`${datePart}T${e.target.value}`);
+                          const startT = startTime?.slice(11, 16) || "00:00";
+                          const currentEndDatePart =
+                            endTime?.slice(0, 10) || startDatePart;
+
+                          let newEnd = new Date(
+                            `${currentEndDatePart}T${e.target.value}:00`,
+                          );
+
+                          // Only auto-rollover if end date currently equals start date (single-day case).
+                          // If user already picked a multi-day range via the calendar, leave that date alone.
+                          if (currentEndDatePart === startDatePart) {
+                            const startDate = new Date(
+                              `${startDatePart}T${startT}:00`,
+                            );
+                            if (newEnd <= startDate) {
+                              newEnd = new Date(
+                                newEnd.getTime() + 24 * 60 * 60000,
+                              ); // push to next day
+                            }
+                          }
+
+                          setEndTime(formatToDateTimeLocal(newEnd));
                         }}
                         className="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500/50 font-mono"
                       />
@@ -714,29 +734,29 @@ function CreateCampaignModal({ onClose }: { onClose: () => void }) {
                       </label>
                       <div className="grid grid-cols-4 gap-1">
                         {[15, 30, 45, 60].map((mins) => {
-                          const startT = startTime?.slice(11, 16);
-                          const [h, m] = (startT || "09:00")
-                            .split(":")
-                            .map(Number);
-                          const total = h * 60 + m + mins;
-                          const projected = `${String(Math.floor(total / 60) % 24).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
-                          const isActive = endTime?.slice(11, 16) === projected;
+                          const datePart =
+                            startTime?.slice(0, 10) ||
+                            formatToDateTimeLocal(new Date()).slice(0, 10);
+                          const startT = startTime?.slice(11, 16) || "09:00";
+
+                          const startDate = new Date(
+                            `${datePart}T${startT}:00`,
+                          );
+                          const projectedDate = new Date(
+                            startDate.getTime() + mins * 60000,
+                          );
+                          const projectedFull =
+                            formatToDateTimeLocal(projectedDate); // full "YYYY-MM-DDTHH:mm"
+
+                          const isActive = endTime === projectedFull; // compare full datetime, not just HH:mm
+
                           return (
                             <button
                               key={mins}
                               type="button"
-                              onClick={() => {
-                                const datePart =
-                                  endTime?.slice(0, 10) ||
-                                  startTime?.slice(0, 10) ||
-                                  formatToDateTimeLocal(new Date()).slice(
-                                    0,
-                                    10,
-                                  );
-                                setEndTime(`${datePart}T${projected}`);
-                              }}
+                              onClick={() => setEndTime(projectedFull)}
                               className={`py-1.5 rounded-lg text-[10px] font-medium border transition-all
-                  ${isActive ? "bg-rose-500/20 border-rose-500/40 text-rose-300" : "bg-zinc-900 border-white/5 text-zinc-500 hover:border-white/20 hover:text-zinc-300"}`}
+        ${isActive ? "bg-rose-500/20 border-rose-500/40 text-rose-300" : "bg-zinc-900 border-white/5 text-zinc-500 hover:border-white/20 hover:text-zinc-300"}`}
                             >
                               {mins}m
                             </button>
